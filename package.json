@@ -1,0 +1,28 @@
+{
+  "name": "conieco-form",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@quillforms/blocks": "^4.0.4",
+    "@quillforms/react-renderer-utils": "^5.2.3",
+    "@quillforms/renderer-core": "^5.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@quillforms/types": "^3.0.9",
+    "@quillforms/utils": "^3.0.12",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^3.1.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
+  }
+}
