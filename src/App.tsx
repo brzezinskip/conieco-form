@@ -4,6 +4,7 @@ import { Form, useFieldAnswer } from "@quillforms/renderer-core";
 import "@quillforms/renderer-core/build-style/style.css";
 import { registerCoreBlocks } from "@quillforms/react-renderer-utils";
 registerCoreBlocks();
+import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
 
 
 const translations = {
@@ -42,169 +43,35 @@ const folderPics: { [key: string]: string } = {
 }
 
 
-
-const invitationsConfig: { [key: string]: { softTouch: boolean } } = {
-  "art-of-love": {
-    softTouch: true,
-  },
-  "brigitte": {
-    softTouch: false,
-  },
-  "classy": {
-    softTouch: true,
-  },
-  "dune": {
-    softTouch: false,
-  },
-  "elusive-beige": {
-    softTouch: true,
-  },
-  "juliette-roma": {
-    softTouch: false,
-  },
-  "juliette-paris": {
-    softTouch: true,
-  },
-  "just-gold": {
-    softTouch: false,
-  },
-  "frame": {
-    softTouch: true,
-  },
-  "blossom": {
-    softTouch: false,
-  },
-  "mocca": {
-    softTouch: true,
-  },
-  "love-letter": {
-    softTouch: false,
-  },
-  "minimal": {
-    softTouch: true,
-  },
-  "marble": {
-    softTouch: false,
-  },
-  "black": {
-    softTouch: true,
-  },
-  "romance": {
-    softTouch: false,
-  },
-  "lovely": {
-    softTouch: true,
-  },
-  "line": {
-    softTouch: false,
-  },
-  "boarding-pass": {
-    softTouch: true,
-  },
-  "elisa": {
-    softTouch: false,
-  },
-  "french-kiss": {
-    softTouch: true,
-  },
-  "misty-green": {
-    softTouch: false,
-  },
-  "silver-night": {
-    softTouch: true,
-  },
-  "smooth-glam": {
-    softTouch: false,
-  },
-  "sunset": {
-    softTouch: true,
-  },
-  "palms": {
-    softTouch: false,
-  },
-  "pure-love": {
-    softTouch: true,
-  },
-  "emerald": {
-    softTouch: false,
-  },
-  "simple-rose": {
-    softTouch: true,
-  },
-  "fern": {
-    softTouch: false,
-  },
-  "cheers": {
-    softTouch: true,
-  },
-  "your-way": {
-    softTouch: false,
-  },
-  "black-velvet": {
-    softTouch: false,
-  },
-  "royal": {
-    softTouch: true,
-  },
-  "marseille": {
-    softTouch: false,
-  },
-  "himalayan-salt": {
-    softTouch: true,
-  },
-  "sophie": {
-    softTouch: false,
-  },
-  "snow-white": {
-    softTouch: true,
-  },
-}
-
-function folderFinishingQuestions() {
+function folderFinishingQuestions(invitation: InvitationConfig) {
   return {
     name: "multiple-choice",
     id: "folder-finishing",
     attributes: {
       label: "Rodzaje wykończenia",
-      choices: [{
-        value: "magnes",
-        label: "Magnes"
-      }, {
-        value: "magnes-z-chwostem",
-        label: "Magnes z chwostem"
-      },
-      {
-        value: "sznurek",
-        label: "Sznurek"
-      },
-      {
-        value: "sznurek-z-zawieszka",
-        label: "Sznurek z zawieszką"
-      },
-      {
-        value: "lak",
-        label: "Lak"
-      },
-      {
-        value: "wstazka-szyfonowa",
-        label: "Wstążka szyfonowa"
-      },
-      {
-        value: "wstazka-jedwabna",
-        label: "Wstążka jedwabna"
-      },
-      {
-        value: "papierowa-opaska",
-        label: "Papierowa opaska"
-      },
-      ],
+      choices: listToQuestions(invitation.folderQuestions?.decorations),
       multiple: true,
       required: true,
     }
   }
 }
 
-function folderQuestions(showFolderQuestions: boolean, folderPic: string, folderAnswer: string) {
+function folderColorQuestions(invitation: InvitationConfig) {
+  return [{
+    name: "dropdown",
+    id: "folder",
+    attributes: {
+      label: "Kolor",
+      choices: listOfColors(invitation.folderQuestions?.colors),
+      required: true
+    }
+  }];
+}
+
+function folderQuestions(invitation: InvitationConfig, folderPic: string) {
+  const showFolderQuestions = invitationHasFolder(invitation);
+  const folderAnswer: string = useFieldAnswer("folder") as string;
+
   return (showFolderQuestions
     ? [
       {
@@ -219,28 +86,8 @@ function folderQuestions(showFolderQuestions: boolean, folderPic: string, folder
           layout: "split-right" as "split-right",
         },
         innerBlocks: [
-          {
-
-            name: "dropdown",
-            id: "folder",
-            attributes: {
-              label: "Kolor",
-              choices: [
-                { value: "złoty", label: "Złoty" },
-                { value: "srebrny", label: "Srebrny" },
-                { value: "czarny", label: "Czarny" },
-                { value: "zielony", label: "Zielony" },
-                { value: "granatowy", label: "Granatowy" },
-                { value: "różowy", label: "Różowy" },
-                { value: "biały", label: "Biały" },
-                { value: "herbaciany", label: "Herbaciany" },
-                { value: "bordowy", label: "Bordowy" },
-                { value: "inny", label: "Inny" },
-              ],
-              required: true
-            }
-          }
-          , ...(folderAnswer === "inny"
+          ...folderColorQuestions(invitation),
+          ...(folderAnswer === "inny"
             ? [
               {
                 name: "short-text",
@@ -252,7 +99,7 @@ function folderQuestions(showFolderQuestions: boolean, folderPic: string, folder
               }
             ]
             : []),
-          folderFinishingQuestions(),
+          folderFinishingQuestions(invitation),
         ]
       }
     ]
@@ -260,6 +107,8 @@ function folderQuestions(showFolderQuestions: boolean, folderPic: string, folder
 }
 
 function invitationsCountGroup() {
+  const nonPersonalizedAnswer = useFieldAnswer("non-personalized-count");
+  const showNonPersonalizedDropdown = nonPersonalizedAnswer && nonPersonalizedAnswer > 0;
   return {
     name: "group",
     id: "invitations-count-group",
@@ -288,6 +137,22 @@ function invitationsCountGroup() {
           required: true,
         }
       },
+      ...showNonPersonalizedDropdown ? [
+        {
+          name: "dropdown",
+          id: "non-personalized-dropdown-answer",
+          attributes: {
+            label: "Miejsce na personalizację",
+            required: true,
+            choices: [
+              { value: "bez-miejsca", label: "Bez miejsca na wypisanie personalizacji" },
+              { value: "linia", label: "Linia" },
+              { value: "wykropkowane", label: "Wykropkowane" },
+              { value: "puste-miejsce", label: "Puste miejsce" }
+            ]
+          }
+        }
+      ] : [],
       {
         name: "number",
         id: "rsvp-count",
@@ -301,7 +166,7 @@ function invitationsCountGroup() {
         id: "addons-count",
         attributes: {
           label: "Ilość kart dodatkowych np. INFO",
-          required: true,
+          required: false,
         }
       },
       {
@@ -309,7 +174,7 @@ function invitationsCountGroup() {
         id: "notify-count",
         attributes: {
           label: "Ilość zawiadomień o ceremonii",
-          required: true,
+          required: false,
         }
       },
     ]
@@ -332,7 +197,7 @@ function miscGroup() {
       {
         name: "short-text",
         id: "languages",
-        attributes: { label: "Dodatkowe wersje językowe.", placeholder: "angielska/niemiecka/hiszpańska" }
+        attributes: { label: "Dodatkowe wersje językowe.", placeholder: "angielska/niemiecka/hiszpańska" } // przeniesc do "innych danych"
       },
       {
         name: "multiple-choice",
@@ -360,6 +225,19 @@ function miscGroup() {
           required: true
         }
       },
+      {
+        name: "short-text",
+        id: "invoice",
+        attributes: {
+          label: "Dane do faktury",
+          choices: [
+            { value: "yes", label: "Tak" },
+            { value: "no", label: "Nie" },
+          ],
+          multiple: false,
+          required: false
+        }
+      },
     ]
   }
 }
@@ -367,7 +245,7 @@ function miscGroup() {
 
 function invitationGroup() {
   const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
-  const showSoftTouch = invitationsConfig[invitationNameAnswer]?.softTouch;
+  const showSoftTouch = InvitationsConfig[invitationNameAnswer]?.softTouch;
 
   return {
     name: "group",
@@ -387,46 +265,7 @@ function invitationGroup() {
         attributes: {
           label: "Nazwa zaproszenia",
           required: true,
-          choices: [
-            { value: "art-of-love", label: "Art of Love" },
-            { value: "brigitte", label: "Brigitte" },
-            { value: "classy", label: "Classy" },
-            { value: "dune", label: "Dune" },
-            { value: "elusive-beige", label: "Elusive Beige" },
-            { value: "juliette-roma", label: "Juliette Roma" },
-            { value: "juliette-paris", label: "Juliette Paris" },
-            { value: "just-gold", label: "Just Gold" },
-            { value: "frame", label: "Frame" },
-            { value: "blossom", label: "Blossom" },
-            { value: "mocca", label: "Mocca" },
-            { value: "love-letter", label: "Love Letter" },
-            { value: "minimal", label: "Minimal" },
-            { value: "marble", label: "Marble" },
-            { value: "black", label: "Black Elegance" },
-            { value: "romance", label: "Romance" },
-            { value: "lovely", label: "Lovely" },
-            { value: "line", label: "Line" },
-            { value: "boarding-pass", label: "Boarding Pass" },
-            { value: "elisa", label: "Elisa" },
-            { value: "french-kiss", label: "French Kiss" },
-            { value: "misty-green", label: "Misty Green" },
-            { value: "silver-night", label: "Silver Night" },
-            { value: "smooth-glam", label: "Smooth Glam" },
-            { value: "sunset", label: "Sunset" },
-            { value: "palms", label: "Palms" },
-            { value: "pure-love", label: "Pure Love" },
-            { value: "emerald", label: "Emerald" },
-            { value: "simple-rose", label: "Simple Rose" },
-            { value: "fern", label: "Fern" },
-            { value: "cheers", label: "Cheers" },
-            { value: "your-way", label: "Your Way" },
-            { value: "black-velvet", label: "Black Velvet" },
-            { value: "royal", label: "Royal" },
-            { value: "marseille", label: "Marseille" },
-            { value: "himalayan-salt", label: "Himalayan Salt" },
-            { value: "sophie", label: "Sophie" },
-            { value: "snow-white", label: "Snow White" },
-          ]
+          choices: getInvitationNames()
         }
       }
       , ...(showSoftTouch
@@ -448,12 +287,91 @@ function invitationGroup() {
     ]
   }
 }
+
+
+function personalData() {
+  return {
+    name: "group",
+    id: "personal-data",
+    attributes: {
+      label: "Dane osobowe.",
+      attachment: {
+        type: "image" as "image",
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2022/12/zaproszenia-slubne_eleganckie_minimalistyczne_nowoczesne_proste_klasyczne_na-slub_coniecopapieru_baner-1536x727.jpg"
+
+      },
+      layout: 'split-left' as "split-left"
+    },
+    innerBlocks: [
+      {
+        name: "short-text",
+        id: "bride-name",
+        attributes: {
+          required: true,
+          label: "Imię i nazwisko panny młodej",
+          placeholder: "Joanna Kowalska",
+        }
+      },
+      {
+        name: "short-text",
+        id: "groom-name",
+        attributes: {
+          required: true,
+          label: "Imię i nazwisko pana młodego",
+          placeholder: "Jan Nowak",
+        }
+      },
+      {
+        name: "email",
+        id: "email",
+        attributes: {
+          label: "Adres e-mail",
+          placeholder: "john-doe@gmail.com",
+          required: true,
+        }
+      },
+      {
+        id: "addres",
+        name: "long-text",
+        attributes: {
+          label: "Adres do wysyłki",
+          required: true,
+          placeholder: "Ul. Główna 28\n00-001 Warszawa",
+        }
+      },
+      {
+        id: "phone-number-bride",
+        name: "short-text",
+        attributes: {
+          setMaxCharacters: true,
+          maxCharacters: "20",
+          required: true,
+          label: "Numer telefonu Panny Młodej",
+          placeholder: "48 123 456 789"
+        }
+      },
+      {
+        id: "phone-number-groom",
+        name: "short-text",
+        attributes: {
+          setMaxCharacters: true,
+          maxCharacters: "20",
+          required: true,
+          label: "Numer telefonu Pana Młodego",
+          placeholder: "48 123 456 789"
+        }
+      }
+    ]
+
+  }
+}
 function App() {
   const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
-  const folderAnswer: string = useFieldAnswer("folder") as string;
   const folderPic = invitationNameAnswer ? folderPics[invitationNameAnswer] : '';
-  const showFolderQuestions = ["juliette-roma", "just-gold", "royal", "boarding-pass"].includes(invitationNameAnswer);
 
+  const currentInvitation: InvitationConfig = InvitationsConfig[invitationNameAnswer];
+
+  //clear all groups after personalData when user changes invitation answer
 
   return (
     <div className={"myForm"}>
@@ -476,7 +394,6 @@ function App() {
             errorsBgColor: "#f00",
             progressBarFillColor: "#fdf2ed",
             progressBarBgColor: "#cebb84",
-            //backgroundImage: "https://www.coniecopapieru.com/wp-content/uploads/2019/10/blog.jpg"
           },
           messages: translations,
           hiddenFields: {},
@@ -486,120 +403,40 @@ function App() {
             animationDirection: 'horizontal',
           },
           blocks: [
-            {
-              name: "group",
-              id: "personal-data",
-              attributes: {
-                label: "Dane osobowe.",
-                attachment: {
-                  type: "image",
-                  url: "https://www.coniecopapieru.com/wp-content/uploads/2022/12/zaproszenia-slubne_eleganckie_minimalistyczne_nowoczesne_proste_klasyczne_na-slub_coniecopapieru_baner-1536x727.jpg"
+            personalData(),
+            //{
+            //  id: "date",
+            //  name: "date",
+            //  attributes: {
+            //    label: "Data ślubu",
+            //    format: "DDMMYYYY",
+            //    required: true,
+            //    attachment: {
+            //      type: "image",
+            //      url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/line4_4.jpg"
 
-                },
-                layout: 'split-left',
-              },
-              innerBlocks: [
-                {
-                  name: "short-text",
-                  id: "bride-name",
-                  attributes: {
-                    required: true,
-                    label: "Imię i nazwisko panny młodej",
-                    placeholder: "Joanna Kowalska",
-                  }
-                },
-                {
-                  name: "short-text",
-                  id: "groom-name",
-                  attributes: {
-                    required: true,
-                    label: "Imię i nazwisko pana młodego",
-                    placeholder: "Jan Nowak",
-                  }
-                },
-                {
-                  name: "email",
-                  id: "email",
-                  attributes: {
-                    label: "Adres e-mail",
-                    placeholder: "john-doe@gmail.com",
-                    required: true,
-                  }
-                },
-                {
-                  id: "addres",
-                  name: "long-text",
-                  attributes: {
-                    label: "Adres do wysyłki",
-                    required: true,
-                    placeholder: "Ul. Główna 28\n00-001 Warszawa",
-                  }
-                },
-                {
-                  id: "phone-number-bride",
-                  name: "short-text",
-                  attributes: {
-                    setMaxCharacters: true,
-                    maxCharacters: "20",
-                    required: true,
-                    label: "Numer telefonu Panny Młodej",
-                    placeholder: "48 123 456 789"
-                  }
-                },
-                {
-                  id: "phone-number-groom",
-                  name: "short-text",
-                  attributes: {
-                    setMaxCharacters: true,
-                    maxCharacters: "20",
-                    required: true,
-                    label: "Numer telefonu Pana Młodego",
-                    placeholder: "48 123 456 789"
-                  }
-                }
-              ]
-
-            },
-            {
-              id: "date",
-              name: "date",
-              attributes: {
-                label: "Data ślubu",
-                format: "DDMMYYYY",
-                required: true,
-                attachment: {
-                  type: "image",
-                  url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/line4_4.jpg"
-
-                },
-                layout: 'split-right',
-              }
-            },
+            //    },
+            //    layout: 'split-right',
+            //  }
+            //},
             invitationGroup(),
-            {
-              name: "long-text",
-              id: "changes",
-              attributes: {
-                label: "Wszelkie informacje dotyczące zmian.",
-                attachment: {
-                  type: "image",
-                  url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
-                },
-                layout: 'split-right',
-              }
-            },
+            //{
+            //  name: "long-text",
+            //  id: "changes",
+            //  attributes: {
+            //    label: "Wszelkie informacje dotyczące zmian.",
+            //    attachment: {
+            //      type: "image",
+            //      url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
+            //    },
+            //    layout: 'split-right',
+            //  }
+            //},
             invitationsCountGroup(),
-            miscGroup(),
-            ...folderQuestions(showFolderQuestions, folderPic, folderAnswer),
-            envelopeGroup(showFolderQuestions)
+            ...folderQuestions(currentInvitation, folderPic),
+            envelopeGroup(currentInvitation),
+            miscGroup(), // przeniesc na koniec gdzies tam
           ],
-        }}
-        beforeGoingNext={({ answers, ...rest }) => {
-          if ((answers["notify-count"] as any).value === 6) {
-            //return { ...rest, answers }
-          }
-          rest.goNext();
-          //return { ...rest, answers }
         }}
         onSubmit={(data, { completeForm, setIsSubmitting }) => {
           setTimeout(() => {
@@ -613,19 +450,25 @@ function App() {
 }
 
 export default App
-//folder -> kazde zaproszenie w folderze ma zdefiniowana liste dostepnych kolorow, lub "inny"
-//folder -> kazde zaproszenie ma zdefiniowana liste mozliwych wykonczen folderu -> lub wielokrotny wybor
+//po ilościach dane takie jak:
+//Treść zaproszenia
+// Treść zaproszenia:
+// Czy zaproszenie ma zawierać zwrot "wraz z rodzicami?"
+// Data ślubu
+// Godzina
+// -Miejsce i adres uroczystości (np. Kościół/Urząd stanu cywilnego/plener)
+//
+// -Miejsce i adres przyjęcia weselnego
+//przeniesc wybor soft touch do dodatkow (?)
 
 
-//wykonczenie zaproszenia (przed pytaniem o folder) -> kazde zaproszenie ma zdefiniowana liste wykonczen [moze byc pusta, wtedy nie wyswietlamy]
-//jezeli lista nie jest pusta, wyswietl brak, lub lista wielokrotnego wyboru
-
-
-function envelopeGroup(showFolderQuestions: boolean) {
+function envelopeGroup(invitation: InvitationConfig) {
   const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
   const wantsEnvelopeAnswer = useFieldAnswer("wants-envelope") as [string];
   const envelopeColorAnswer = useFieldAnswer("envelope-color") as string;
   const envelopeTypeAnswer = useFieldAnswer("envelope-type") as string;
+
+  const showFolderQuestions = invitationHasFolder(invitation);
 
   const colorQuestion = {
     name: "dropdown",
@@ -723,20 +566,13 @@ function envelopeGroup(showFolderQuestions: boolean) {
 
 //wybierz -> jezeli zaproszenie smooth-glam, pytaj o rodzaj, w innym wypadku zawsze klasyczna  (wybor) klasyczna/kieszeniowa (tylko dla smooth-glam)
 //120g miekka -> wszystkie zaproszenia, 250g- 300g sztywna - tylko niektore z zaproszen [potrzebna lista]
+//
 // kolor -> kazde zaproszenie musi miec zdefiniowana pule kolorow, lub kolor "inny", wtedy wyswietl pole tekstowe
 // zdobienie koperty -> brak, lub lista wielokrotnego wyboru w zaleznosci od wybranego zaproszenia
-// ilosc kopert -liczba 
-//
-//
-// Treść zaproszenia:
-// Czy zaproszenie ma zawierać zwrot "wraz z rodzicami?"
-// Data ślubu
-// Godzina
-// Miejsce uroczystości (np. Kościół/Urząd stanu cywilnego/plener)
-// Adres uroczystości
-// Czy poza ślubem odbywa się wesele? tak/nie
-// tak -> Miejsce przyjęcia weselnego
-// Adres przyjęcia weselnego
+//folder -> kazde zaproszenie w folderze ma zdefiniowana liste dostepnych kolorow, lub "inny"
+//folder -> kazde zaproszenie ma zdefiniowana liste mozliwych wykonczen folderu -> lub wielokrotny wybor
+//wykonczenie zaproszenia (przed pytaniem o folder) -> kazde zaproszenie ma zdefiniowana liste wykonczen [moze byc pusta, wtedy nie wyswietlamy]
+//jezeli lista nie jest pusta, wyswietl brak, lub lista wielokrotnego wyboru
 
 
 //RSVP:
