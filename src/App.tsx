@@ -225,19 +225,18 @@ function miscGroup() {
           required: true
         }
       },
-      {
-        name: "short-text",
-        id: "invoice",
-        attributes: {
-          label: "Dane do faktury",
-          choices: [
-            { value: "yes", label: "Tak" },
-            { value: "no", label: "Nie" },
-          ],
-          multiple: false,
-          required: false
-        }
-      },
+      //{
+      //  name: "long-text",
+      //  id: "changes",
+      //  attributes: {
+      //    label: "Wszelkie informacje dotyczące zmian.",
+      //    attachment: {
+      //      type: "image",
+      //      url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
+      //    },
+      //    layout: 'split-right',
+      //  }
+      //},
     ]
   }
 }
@@ -290,6 +289,9 @@ function invitationGroup() {
 
 
 function personalData() {
+  const invoiceAnswer = useFieldAnswer("needs-invoice") as string[];
+  const invoice = invoiceAnswer && invoiceAnswer[0] === "tak";
+  console.log(invoiceAnswer)
   return {
     name: "group",
     id: "personal-data",
@@ -360,7 +362,30 @@ function personalData() {
           label: "Numer telefonu Pana Młodego",
           placeholder: "48 123 456 789"
         }
-      }
+      },
+      {
+        name: "multiple-choice",
+        id: "needs-invoice",
+        attributes: {
+          label: "Czy potrzebujesz faktury?",
+          choices: [
+            { value: "tak", label: "Tak" },
+            { value: "nie", label: "Nie" },
+          ],
+          multiple: false,
+          required: true
+        }
+      },
+      ...(invoice ? [
+        {
+          name: "long-text",
+          id: "invoice-details",
+          attributes: {
+            label: "Dane do faktury",
+            required: true
+          }
+        }
+      ] : [])
     ]
 
   }
@@ -404,35 +429,9 @@ function App() {
           },
           blocks: [
             personalData(),
-            //{
-            //  id: "date",
-            //  name: "date",
-            //  attributes: {
-            //    label: "Data ślubu",
-            //    format: "DDMMYYYY",
-            //    required: true,
-            //    attachment: {
-            //      type: "image",
-            //      url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/line4_4.jpg"
-
-            //    },
-            //    layout: 'split-right',
-            //  }
-            //},
             invitationGroup(),
-            //{
-            //  name: "long-text",
-            //  id: "changes",
-            //  attributes: {
-            //    label: "Wszelkie informacje dotyczące zmian.",
-            //    attachment: {
-            //      type: "image",
-            //      url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
-            //    },
-            //    layout: 'split-right',
-            //  }
-            //},
             invitationsCountGroup(),
+            invitationDetails(),
             ...folderQuestions(currentInvitation, folderPic),
             envelopeGroup(currentInvitation),
             miscGroup(), // przeniesc na koniec gdzies tam
@@ -449,6 +448,66 @@ function App() {
   )
 }
 
+function invitationDetails() {
+  return {
+    name: "group",
+    id: "zaproszenie-detale",
+    attributes: {
+      label: "Informacje nt. zaproszenia.",
+      attachment: {
+        type: "image" as "image",
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2019/10/eleganckie-zaproszenia-slubne_nietypowe_zlocone_klasyczne_transparentne_czarne__zlota-folia_co-nieco-papieru1.jpg"
+      },
+      layout: "split-right" as "split-right",
+    },
+    innerBlocks: [
+      {
+        name: "long-text",
+        id: "tresc-zaproszenia",
+        attributes: {
+          label: "Treść zaproszenia",
+          required: true,
+        }
+      },
+      {
+        name: "multiple-choice",
+        id: "wraz-z-rodzicami",
+        attributes: {
+          label: `Czy zaproszenie ma zawierać zwrot "wraz z rodzicami"?`,
+          required: true,
+          choices: [{ value: "tak", label: "Tak" }, { value: "nie", label: "Nie" }],
+          multiple: false
+        }
+      },
+      {
+        id: "data-slubu",
+        name: "date",
+        attributes: {
+          label: "Data ślubu",
+          format: "DDMMYYYY",
+          required: true,
+        }
+      },
+      {
+        name: "long-text",
+        id: "miejsce-adres-uroczystosci",
+        attributes: {
+          label: "Miejsce i adres uroczystości (np. Kościół/Urząd stanu cywilnego/plener)",
+          required: true,
+        }
+      },
+      {
+        name: "long-text",
+        id: "miejsce-adres-przyjecia",
+        attributes: {
+          label: "Miejsce i adres przyjęcia weselnego",
+          required: true,
+        }
+      },
+    ]
+  }
+}
+
 export default App
 //po ilościach dane takie jak:
 //Treść zaproszenia
@@ -461,6 +520,7 @@ export default App
 // -Miejsce i adres przyjęcia weselnego
 //przeniesc wybor soft touch do dodatkow (?)
 
+// soft touch -> zmien z boola i dodaj do listy wykonczen folderu i wykonczen zaproszen
 
 function envelopeGroup(invitation: InvitationConfig) {
   const invitationNameAnswer = useFieldAnswer("invitation-name") as string;

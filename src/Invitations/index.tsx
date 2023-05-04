@@ -235,7 +235,10 @@ const InvitationsConfig: IInvitationsConfig = {
     softEnvelopeColors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
     hardEnvelopeColors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
     softTouch: true,
-    folderQuestions: { colors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"], decorations: ["Papierowa opaska ze złoceniem (3 zł)", "Zamknięcie folderu złotym/srebrnym sznureczkiem (1 zł)"] },
+    folderQuestions: {
+      colors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
+      decorations: ["Papierowa opaska ze złoceniem (3 zł)", "Zamknięcie folderu złotym/srebrnym sznureczkiem (1 zł)"]
+    },
   },
   "elisa": {
     decoration: ["Opaska z papieru transparentnego z różą (3,5 zł)", "Transparentna obwoluta ze złotą nitką (4 zł)", "Ręcznie rwana szyfonowa wstążka (3 zł)", "Odbicie lakowe (4 zł)"],
