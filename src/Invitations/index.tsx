@@ -33,7 +33,11 @@ export function getInvitationNames(): Array<{ value: string, label: string }> {
 }
 
 export function invitationHasFolder(invitation: InvitationConfig | undefined) {
-  return invitation?.folderQuestions;
+  return !!invitation?.folderQuestions;
+}
+
+export function invitationHasDecorations(invitation: InvitationConfig | undefined) {
+  return !!invitation?.decoration;
 }
 
 function slugify(s: string) {

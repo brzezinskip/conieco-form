@@ -4,7 +4,7 @@ import { Form, useFieldAnswer } from "@quillforms/renderer-core";
 import "@quillforms/renderer-core/build-style/style.css";
 import { registerCoreBlocks } from "@quillforms/react-renderer-utils";
 registerCoreBlocks();
-import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
+import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasDecorations, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
 
 
 const translations = {
@@ -48,7 +48,7 @@ function folderFinishingQuestions(invitation: InvitationConfig) {
     name: "multiple-choice",
     id: "folder-finishing",
     attributes: {
-      label: "Rodzaje wykończenia",
+      label: "Rodzaje wykończenia folderu",
       choices: listToQuestions(invitation.folderQuestions?.decorations),
       multiple: true,
       required: true,
@@ -101,6 +101,30 @@ function folderQuestions(invitation: InvitationConfig, folderPic: string) {
             : []),
           folderFinishingQuestions(invitation),
         ]
+      }
+    ]
+    : [])
+}
+
+function decorations(invitation: InvitationConfig) {
+  const showDecorationsQuestions = invitationHasDecorations(invitation);
+
+  return (showDecorationsQuestions
+    ? [
+      {
+        name: "multiple-choice",
+        id: "invitation-decoration",
+        attributes: {
+          attachment: {
+            type: "image" as "image",
+            url: "https://www.coniecopapieru.com/wp-content/uploads/2021/02/eleganckie-zaproszenia-slubne_nietypowe_nowoczesne_ecru_zlocone_luksusowe_oryginalne_glamour_minimalistyczne_kaligrafia_co-nieco-papieru3.jpg"
+          },
+          layout: "split-right" as "split-right",
+          label: "Rodzaje wykończenia zaproszenia",
+          choices: listToQuestions(invitation.decoration || []),
+          multiple: true,
+          required: true,
+        }
       }
     ]
     : [])
@@ -433,6 +457,7 @@ function App() {
             invitationsCountGroup(),
             invitationDetails(),
             ...folderQuestions(currentInvitation, folderPic),
+            ...decorations(currentInvitation),
             envelopeGroup(currentInvitation),
             miscGroup(), // przeniesc na koniec gdzies tam
           ],
