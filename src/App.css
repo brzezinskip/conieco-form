@@ -12,3 +12,13 @@ body {
 .css-f7weyc {
   background: none !important;
 }
+
+
+.css-yj8gbd .multipleChoice__optionWrapper {
+  max-width: 230px !important;
+}
+
+.renderer-components-form-footer {
+  width: 320px;
+  left: unset !important;
+}

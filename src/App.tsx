@@ -5,6 +5,7 @@ import "@quillforms/renderer-core/build-style/style.css";
 import { registerCoreBlocks } from "@quillforms/react-renderer-utils";
 registerCoreBlocks();
 import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasDecorations, invitationHasEnvelopesChoice, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
+import { FormBlock } from '@quillforms/types/src/types/form-blocks';
 
 const translations = {
   'label.button.ok': "Ok",
@@ -211,66 +212,65 @@ function miscGroup() {
       label: "Pytania dodatkowe.",
       attachment: {
         type: "image" as "image",
-        url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/linee_1.jpg"
       },
       layout: 'split-right' as 'split-right',
-      innerBlocks: [
-        {
-          name: "multiple-choice",
-          id: "mode",
-          attributes: {
-            label: "Tryb.",
-            choices: [
-              { value: "normal", label: "Normalny" },
-              { value: "express", label: "Ekspres(+30%)" },
-            ],
-            multiple: false,
-            required: true
-          }
-        },
-        {
-          name: "multiple-choice",
-          id: "put-together-service",
-          attributes: {
-            label: "Usługa składu.",
-            choices: [
-              { value: "yes", label: "Tak" },
-              { value: "no", label: "Nie" },
-            ],
-            multiple: false,
-            required: true
-          }
-        },
-        {
-          name: "long-text",
-          id: "changes",
-          attributes: {
-            label: "Wszelkie informacje dotyczące zmian.",
-            layout: 'split-right',
-          }
-        },
-        {
-          name: "multiple-choice",
-          id: "skad-sie-dowiedzieliscie",
-          attributes: {
-            label: "Skąd się o nas dowiedzieliście? :)",
-            choices: [
-              { value: "instagram", label: "Instagram" },
-              { value: "facebook", label: "Facebook" },
-              { value: "pinterest", label: "Pinterest" },
-              { value: "wyszukiwarka-internetowa", label: "Wyszukiwarka internetowa" },
-              { value: "z-polecenia", label: "Z polecenia (znajomi / rodzina)" },
-              { value: "z-wesela", label: "Z innego wesela" },
-              { value: "konsultant", label: "Konsultant ślubny" },
-              { value: "inne", label: "Inne źródło" },
-            ],
-            multiple: true,
-            required: false
-          }
-        },
-      ]
-    }
-
+    },
+    innerBlocks: [
+      {
+        name: "multiple-choice",
+        id: "mode",
+        attributes: {
+          label: "Tryb.",
+          choices: [
+            { value: "normal", label: "Normalny" },
+            { value: "express", label: "Ekspres(+30%)" },
+          ],
+          multiple: false,
+          required: true
+        }
+      },
+      {
+        name: "multiple-choice",
+        id: "put-together-service",
+        attributes: {
+          label: "Usługa składu.",
+          choices: [
+            { value: "yes", label: "Tak" },
+            { value: "no", label: "Nie" },
+          ],
+          multiple: false,
+          required: true
+        }
+      },
+      {
+        name: "long-text",
+        id: "changes",
+        attributes: {
+          label: "Wszelkie informacje dotyczące zmian.",
+          layout: 'split-right',
+        }
+      },
+      {
+        name: "multiple-choice",
+        id: "skad-sie-dowiedzieliscie",
+        attributes: {
+          label: "Skąd się o nas dowiedzieliście? :)",
+          choices: [
+            { value: "instagram", label: "Instagram" },
+            { value: "facebook", label: "Facebook" },
+            { value: "pinterest", label: "Pinterest" },
+            { value: "wyszukiwarka-internetowa", label: "Wyszukiwarka internetowa" },
+            { value: "z-polecenia", label: "Z polecenia (znajomi / rodzina)" },
+            { value: "z-wesela", label: "Z innego wesela" },
+            { value: "konsultant", label: "Konsultant ślubny" },
+            { value: "inne", label: "Inne źródło" },
+          ],
+          multiple: true,
+          required: false
+        }
+      },
+    ]
   }
 }
 
@@ -450,7 +450,7 @@ function App() {
             ...folderQuestions(currentInvitation, folderPic),
             ...decorations(currentInvitation),
             envelopeGroup(currentInvitation),
-            miscGroup(),
+            miscGroup() as FormBlock,
           ],
         }}
         onSubmit={(data, { completeForm, setIsSubmitting }) => {
