@@ -9,10 +9,9 @@ interface FolderQuestions {
 
 export interface InvitationConfig {
   decoration: string[] | null;
-  envelopeDecoration: string[] | null;
-  softEnvelopeColors: string[] | null;
-  hardEnvelopeColors: string[] | null;
-  softTouch: boolean;
+  envelopeDecoration: string[] | undefined;
+  softEnvelopeColors: string[] | undefined;
+  hardEnvelopeColors: string[] | undefined;
   folderQuestions: FolderQuestions | null;
 }
 
@@ -34,6 +33,10 @@ export function getInvitationNames(): Array<{ value: string, label: string }> {
 
 export function invitationHasFolder(invitation: InvitationConfig | undefined) {
   return !!invitation?.folderQuestions;
+}
+
+export function invitationHasEnvelopesChoice(invitation: InvitationConfig | undefined): boolean {
+  return !!invitation?.softEnvelopeColors && !!invitation?.hardEnvelopeColors;
 }
 
 export function invitationHasDecorations(invitation: InvitationConfig | undefined) {
@@ -59,16 +62,14 @@ const InvitationsConfig: IInvitationsConfig = {
     decoration: ["Folder z ażurowym monogramem (6 zł)"],
     envelopeDecoration: ["Wkładka do koperty z ażurowym monogramem (4,5 zł)", "Nadruk na kopercie (2 - 3 zł)"],
     softEnvelopeColors: ["Beżowa", "Cynamonowa", "Lawendowa"],
-    hardEnvelopeColors: null,
-    softTouch: false,
+    hardEnvelopeColors: undefined,
     folderQuestions: null
   },
   "minimal": {
-    decoration: ["Tłoczenie na karcie RSVP (0,5 zł)"],
+    decoration: ["Tłoczenie na karcie RSVP (0,5 zł)", "Soft Touch"],
     envelopeDecoration: ["Tłoczenie monogramu (4 zł)", "Wkładka do koperty (4 zł)"],
     softEnvelopeColors: ["Jasnoszara", "Czarna"],
-    hardEnvelopeColors: null,
-    softTouch: true,
+    hardEnvelopeColors: undefined,
     folderQuestions: null
   },
   "line": {
@@ -76,7 +77,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Ręczne złocenie koperty (4 zł)", "Wkładka do koperty (4 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
     softEnvelopeColors: ["Migdałowa"],
     hardEnvelopeColors: ["Migdałowa"],
-    softTouch: false,
     folderQuestions: null
   },
   "aurora": {
@@ -84,7 +84,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Wkładka do koperty z papieru standardowego (proste krawędzie) (4 zł)", "Wkładka do koperty (6 zł)", "Nadruk na kopercie (2 zł - 4 zł)", "Odbicie lakowe (4 zł)", "Personalizowana pieczęć lakowa (350 zł)"],
     softEnvelopeColors: ["Beżowa", "Biała"],
     hardEnvelopeColors: ["Beżowa", "Ciemnobeżowa o matowej strukturze"],
-    softTouch: false,
     folderQuestions: null
   },
   "snow-white": {
@@ -92,15 +91,13 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Odbicie lakowe (4 zł)", "Wkładka do koperty (4 zł)", "Nadruk na kopercie (2 zł - 4 zł)"],
     softEnvelopeColors: ["Jasnoszara"],
     hardEnvelopeColors: ["Jasnoszara"],
-    softTouch: false,
     folderQuestions: null
   },
   "frame": {
     decoration: null,
     envelopeDecoration: ["Transparentna opaska (2,5 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
-    softEnvelopeColors: null,
+    softEnvelopeColors: undefined,
     hardEnvelopeColors: ["Beżowa", "Czarna", "Ciemnobeżowa o matowej strukturze"],
-    softTouch: false,
     folderQuestions: null
   },
   "canela": {
@@ -108,7 +105,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Nadruk na kopercie (2,5 zł - 3 zł)"],
     softEnvelopeColors: ["Beżowa", "Cynamonowa"],
     hardEnvelopeColors: ["Beżowa"],
-    softTouch: false,
     folderQuestions: null
   },
   "sophie": {
@@ -116,7 +112,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Nadruk na kopercie (2 zł - 4 zł)", "Wkładka do koperty (4 zł)", "Zamknięcie koperty bawełnianym sznureczkiem (1 zł)"],
     softEnvelopeColors: ["Beżowa"],
     hardEnvelopeColors: ["Beżowa", "Ciemnobeżowa o matowej strukturze"],
-    softTouch: false,
     folderQuestions: null
   },
   "blossom": {
@@ -124,7 +119,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Etykieta z monogramem na kopertę (1,5 zł)", "Złote kółeczko z chwostem (6 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
     softEnvelopeColors: ["Nude (metalizowana)"],
     hardEnvelopeColors: ["Szara", "Biała"],
-    softTouch: false,
     folderQuestions: null
   },
   "art-of-love": {
@@ -132,39 +126,34 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Naklejka na kopertę z monogramem (2 zł)", "Wkładka do koperty (4 zł)", "Odbicie lakowe (4 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
     softEnvelopeColors: ["Beżowa"],
     hardEnvelopeColors: ["Ciemnobeżowa o matowej strukturze", "Beżowa", "Czarna"],
-    softTouch: false,
     folderQuestions: null
   },
   "juliette-paris": {
-    decoration: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6,5 zł)", "Odbicie lakowe (4 zł)"],
+    decoration: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6,5 zł)", "Odbicie lakowe (4 zł)", "Soft touch"],
     envelopeDecoration: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6 zł)", "Odbicie lakowe (4 zł)", "Nadruk monogramu na kopercie (2,5 zł)"],
     softEnvelopeColors: ["Nude (metalizowana)", "Głęboka zieleń"],
-    hardEnvelopeColors: null,
-    softTouch: true,
+    hardEnvelopeColors: undefined,
     folderQuestions: null
   },
   "juliette-roma": {
     decoration: null,
     envelopeDecoration: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6 zł)", "Odbicie lakowe (4 zł)", "Nadruk monogramu na kopercie (2,5 zł - 3,5 zł)"],
     softEnvelopeColors: ["Nude (metalizowana)", "Głęboka zieleń"],
-    hardEnvelopeColors: null,
-    softTouch: true,
-    folderQuestions: { colors: ["Nude (metalizowany)", "Głęboka zieleń"], decorations: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6 zł)", "Odbicie lakowe (4 zł)"] },
+    hardEnvelopeColors: undefined,
+    folderQuestions: { colors: ["Nude (metalizowany)", "Głęboka zieleń"], decorations: ["Złoty sznurek (1 zł)", "Złoty sznurek z kółeczkiem (2,5 zł)", "Złoty sznurek z kółeczkiem i chwostem (6 zł)", "Odbicie lakowe (4 zł)", "Soft touch"] },
   },
   "dune": {
-    decoration: null,
+    decoration: ["Soft touch"],
     envelopeDecoration: ["Nadruk na kopercie (3 zł - 5 zł)", "Wkładka do koperty 4 zł", "Wkładka do koperty złocona 5 zł"],
     softEnvelopeColors: ["Nude (metalizowana)", "Czarna"],
     hardEnvelopeColors: ["Czarna"],
-    softTouch: true,
     folderQuestions: null,
   },
   "classy": {
-    decoration: null,
+    decoration: ["Soft touch"],
     envelopeDecoration: ["Zamknięcie koperty kółeczkiem i chwostem (6 zł)", "Nadruk na kopercie (2,5 zł - 3,5 zł)", "Ozdobny pasek z imionami pary młodej na kopercie (2 zł)", "Odbicie lakowe (4 zł)", "Złocona wkładka do koperty (6 zł)"],
     softEnvelopeColors: ["Różowa perłowa", "Złota"],
     hardEnvelopeColors: ["Złota"],
-    softTouch: true,
     folderQuestions: null,
   },
   "just-gold": {
@@ -172,15 +161,13 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Zamknięcie koperty złotym sznureczkiem ?????", "Zamknięcie koperty na magnes (2 zł)", "Zamknięcie koperty na magnes z chwostem (5,5 zł)", "Wkładka do koperty złocona (6 zł)", "Odbicie lakowe (4 zł)"],
     softEnvelopeColors: ["Złota", "Czarna"],
     hardEnvelopeColors: ["Złota", "Czarna"],
-    softTouch: true,
-    folderQuestions: { colors: ["Złoty", "Srebrny"], decorations: ["Zamknięcie folderu na magnes (2 zł)", "Zamknięcie folderu na magnes z chwostem (5,5 zł)", "Odbicie lakowe (4 zł)"] },
+    folderQuestions: { colors: ["Złoty", "Srebrny"], decorations: ["Zamknięcie folderu na magnes (2 zł)", "Zamknięcie folderu na magnes z chwostem (5,5 zł)", "Odbicie lakowe (4 zł)", "Soft touch"] },
   },
   "elusive-beige": {
-    decoration: null,
+    decoration: ["Soft touch"],
     envelopeDecoration: ["Zamknięcie na magnes (2 zł) (wybrane koperty)", "Chwost (4 zł)", "Wkładka do koperty drukowana (4 zł)", "Wkładka do koperty złocona (5 zł)"],
     softEnvelopeColors: ["Czarna", "Złota metalizowana"],
     hardEnvelopeColors: ["Czarna", "Złota metalizowana"],
-    softTouch: true,
     folderQuestions: null,
   },
   "pure-love": {
@@ -188,7 +175,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Naklejhka na kopertę z imionami pary młodej (2 zł)", "Wkładka do koperty (4 zł)"],
     softEnvelopeColors: ["Beżowa", "Transparentna"],
     hardEnvelopeColors: ["Beżowa"],
-    softTouch: false,
     folderQuestions: null
   },
   "marseille": {
@@ -196,52 +182,44 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Naklejka na kopertę z imionami pary młodej (2 zł)", "Odbicie lakowe (4 zł)", "Wkładka do koperty (4 zł)"],
     softEnvelopeColors: ["Beżowa", "Rubinowa"],
     hardEnvelopeColors: ["Beżowa"],
-    softTouch: false,
     folderQuestions: null
   },
   "royal": {
     decoration: null,
-    envelopeDecoration: null,
+    envelopeDecoration: undefined,
     softEnvelopeColors: ["Jasno szara"],
     hardEnvelopeColors: ["Jasno szara"],
-    softTouch: true,
-    folderQuestions: { colors: ["Off-white"], decorations: ["Zamknięcie folderu na magnes (2 zł)", "Chwost (4 zł)"] },
+    folderQuestions: { colors: ["Off-white"], decorations: ["Zamknięcie folderu na magnes (2 zł)", "Chwost (4 zł)", "Soft touch"] },
   },
   "black-velvet": {
-    decoration: ["Aaksamitka (2 zł)", "Odbicie lakowe (4 zł)"],
+    decoration: ["Aaksamitka (2 zł)", "Odbicie lakowe (4 zł)", "Soft touch"],
     envelopeDecoration: ["Wkładka do koperty drukowana (4 zł)", "Wkładka do koperty złocona (6 zł)"],
     softEnvelopeColors: ["Czarna"],
     hardEnvelopeColors: ["Czarna"],
-    softTouch: true,
     folderQuestions: null,
   },
   "romance": {
     decoration: ["Wstążka jedwabna/szyfonowa (4 zł)"],
     envelopeDecoration: ["Odbicie lakowe (4 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
     softEnvelopeColors: ["Transparentna bez klapy", "Brudny róż", "Rubinowa"],
-    hardEnvelopeColors: null,
-    softTouch: false,
+    hardEnvelopeColors: undefined,
     folderQuestions: null,
   },
   "smooth-glam": {
-    decoration: null,
-    //jaka koperta - klasyczna czy kieszeniowa (pionowa)
-    envelopeDecoration: ["Wkładka do koperty drukowana (4 zł)", "Wkładka do koperty złocona (6 zł)"], //tylko do klasycznej
-    softEnvelopeColors: ["Złota metalizowana", "Srebrna metalizowana", "Jasno szara"], //klasyczna
-    hardEnvelopeColors: ["Złota metalizowana", "Srebrna metalizowana", "Piaskowa szarość"], //kieszeniowa
-    softTouch: true,
+    decoration: ["Soft touch"],
+    envelopeDecoration: ["Wkładka do koperty drukowana (4 zł)", "Wkładka do koperty złocona (6 zł)"],
+    softEnvelopeColors: ["Złota metalizowana", "Srebrna metalizowana", "Jasno szara"],
+    hardEnvelopeColors: ["Złota metalizowana", "Srebrna metalizowana", "Piaskowa szarość"],
     folderQuestions: null,
   },
   "boarding-pass": {
-    //folder czy nie
     decoration: ["Karta dodatkowa RSVP (4 - 6 zł)"],
     envelopeDecoration: ["Zamknięcie koperty złotym/srebrnym sznureczkiem (1 zł)", "Nadruk na kopercie (2,5 zł - 4 zł)"],
     softEnvelopeColors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
     hardEnvelopeColors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
-    softTouch: true,
     folderQuestions: {
       colors: ["Granat", "Czarny", "Beżowo-złoty", "Srebrny"],
-      decorations: ["Papierowa opaska ze złoceniem (3 zł)", "Zamknięcie folderu złotym/srebrnym sznureczkiem (1 zł)"]
+      decorations: ["Papierowa opaska ze złoceniem (3 zł)", "Zamknięcie folderu złotym/srebrnym sznureczkiem (1 zł)", "Soft touch"]
     },
   },
   "elisa": {
@@ -249,7 +227,6 @@ const InvitationsConfig: IInvitationsConfig = {
     envelopeDecoration: ["Wkładka do koperty (4 zł)"],
     softEnvelopeColors: ["Transparentna", "Ecru z deliktanymi drobinkami", "Beżowa metalizowana"],
     hardEnvelopeColors: ["Ecru z deliktanymi drobinkami", "Beżowa metalizowana"],
-    softTouch: false,
     folderQuestions: null
   },
 }

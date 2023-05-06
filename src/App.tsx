@@ -4,8 +4,7 @@ import { Form, useFieldAnswer } from "@quillforms/renderer-core";
 import "@quillforms/renderer-core/build-style/style.css";
 import { registerCoreBlocks } from "@quillforms/react-renderer-utils";
 registerCoreBlocks();
-import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasDecorations, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
-
+import InvitationsConfig, { getInvitationNames, InvitationConfig, invitationHasDecorations, invitationHasEnvelopesChoice, invitationHasFolder, listOfColors, listToQuestions } from "./Invitations";
 
 const translations = {
   'label.button.ok': "Ok",
@@ -42,7 +41,6 @@ const folderPics: { [key: string]: string } = {
   "boarding-pass": "https://www.coniecopapieru.com/wp-content/uploads/2019/08/podroznicze-zaproszenia-slubne_nietypowe_zlocone_travel_boarding-pass_nowoczesne_bilet-lotniczy_zlota-folia_zlocenie_co-nieco-papieru6.jpg"
 }
 
-
 function folderFinishingQuestions(invitation: InvitationConfig) {
   return {
     name: "multiple-choice",
@@ -51,7 +49,7 @@ function folderFinishingQuestions(invitation: InvitationConfig) {
       label: "Rodzaje wykończenia folderu",
       choices: listToQuestions(invitation.folderQuestions?.decorations),
       multiple: true,
-      required: true,
+      required: false,
     }
   }
 }
@@ -123,7 +121,7 @@ function decorations(invitation: InvitationConfig) {
           label: "Rodzaje wykończenia zaproszenia",
           choices: listToQuestions(invitation.decoration || []),
           multiple: true,
-          required: true,
+          required: false,
         }
       }
     ]
@@ -187,17 +185,17 @@ function invitationsCountGroup() {
       },
       {
         name: "number",
-        id: "addons-count",
+        id: "karty-dodatkowe-ilosc",
         attributes: {
-          label: "Ilość kart dodatkowych np. INFO",
+          label: "Ilość kart dodatkowych (np. informacja o noclegu lub transporcie - inna niż RSVP)",
           required: false,
         }
       },
       {
         name: "number",
-        id: "notify-count",
+        id: "zawiadomienia-ilosc",
         attributes: {
-          label: "Ilość zawiadomień o ceremonii",
+          label: "Ilość zawiadomień o ceremonii zaślubin.",
           required: false,
         }
       },
@@ -216,59 +214,68 @@ function miscGroup() {
         url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
       },
       layout: 'split-right' as 'split-right',
+      innerBlocks: [
+        {
+          name: "multiple-choice",
+          id: "mode",
+          attributes: {
+            label: "Tryb.",
+            choices: [
+              { value: "normal", label: "Normalny" },
+              { value: "express", label: "Ekspres(+30%)" },
+            ],
+            multiple: false,
+            required: true
+          }
+        },
+        {
+          name: "multiple-choice",
+          id: "put-together-service",
+          attributes: {
+            label: "Usługa składu.",
+            choices: [
+              { value: "yes", label: "Tak" },
+              { value: "no", label: "Nie" },
+            ],
+            multiple: false,
+            required: true
+          }
+        },
+        {
+          name: "long-text",
+          id: "changes",
+          attributes: {
+            label: "Wszelkie informacje dotyczące zmian.",
+            layout: 'split-right',
+          }
+        },
+        {
+          name: "multiple-choice",
+          id: "skad-sie-dowiedzieliscie",
+          attributes: {
+            label: "Skąd się o nas dowiedzieliście? :)",
+            choices: [
+              { value: "instagram", label: "Instagram" },
+              { value: "facebook", label: "Facebook" },
+              { value: "pinterest", label: "Pinterest" },
+              { value: "wyszukiwarka-internetowa", label: "Wyszukiwarka internetowa" },
+              { value: "z-polecenia", label: "Z polecenia (znajomi / rodzina)" },
+              { value: "z-wesela", label: "Z innego wesela" },
+              { value: "konsultant", label: "Konsultant ślubny" },
+              { value: "inne", label: "Inne źródło" },
+            ],
+            multiple: true,
+            required: false
+          }
+        },
+      ]
     }
-    , innerBlocks: [
-      {
-        name: "short-text",
-        id: "languages",
-        attributes: { label: "Dodatkowe wersje językowe.", placeholder: "angielska/niemiecka/hiszpańska" } // przeniesc do "innych danych"
-      },
-      {
-        name: "multiple-choice",
-        id: "mode",
-        attributes: {
-          label: "Tryb.",
-          choices: [
-            { value: "normal", label: "Normalny" },
-            { value: "express", label: "Ekspres(+30%)" },
-          ],
-          multiple: false,
-          required: true
-        }
-      },
-      {
-        name: "multiple-choice",
-        id: "put-together-service",
-        attributes: {
-          label: "Usługa składu.",
-          choices: [
-            { value: "yes", label: "Tak" },
-            { value: "no", label: "Nie" },
-          ],
-          multiple: false,
-          required: true
-        }
-      },
-      //{
-      //  name: "long-text",
-      //  id: "changes",
-      //  attributes: {
-      //    label: "Wszelkie informacje dotyczące zmian.",
-      //    attachment: {
-      //      type: "image",
-      //      url: "https://www.coniecopapieru.com/wp-content/uploads/2020/12/oryginalne-zaproszenia-slubne_nowoczesne_eleganckie_ekskluzywne_biale_zlocone_pozlacane_minimalistyczne_nietypowe_co-nieco-papieru3.jpg"
-      //    },
-      //    layout: 'split-right',
-      //  }
-      //},
-    ]
+
   }
 }
 
 
 function invitationGroup() {
-  const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
-  const showSoftTouch = InvitationsConfig[invitationNameAnswer]?.softTouch;
 
   return {
     name: "group",
@@ -291,22 +298,6 @@ function invitationGroup() {
           choices: getInvitationNames()
         }
       }
-      , ...(showSoftTouch
-        ? [
-          {
-            name: "multiple-choice",
-            id: "soft-touch",
-            attributes: {
-              label: "Soft touch (Jest to dodatkowe uszlachetnienie nanoszone na papier, dzięki któremu powierzchnia staje się niesamowicie gładka i aksamitna w dotyku).",
-              required: true,
-              choices: [
-                { value: "yes", label: "Tak" },
-                { value: "no", label: "Nie" }
-              ]
-            }
-          }
-        ]
-        : []),
     ]
   }
 }
@@ -315,7 +306,6 @@ function invitationGroup() {
 function personalData() {
   const invoiceAnswer = useFieldAnswer("needs-invoice") as string[];
   const invoice = invoiceAnswer && invoiceAnswer[0] === "tak";
-  console.log(invoiceAnswer)
   return {
     name: "group",
     id: "personal-data",
@@ -456,10 +446,11 @@ function App() {
             invitationGroup(),
             invitationsCountGroup(),
             invitationDetails(),
+            invitationContent(),
             ...folderQuestions(currentInvitation, folderPic),
             ...decorations(currentInvitation),
             envelopeGroup(currentInvitation),
-            miscGroup(), // przeniesc na koniec gdzies tam
+            miscGroup(),
           ],
         }}
         onSubmit={(data, { completeForm, setIsSubmitting }) => {
@@ -478,7 +469,7 @@ function invitationDetails() {
     name: "group",
     id: "zaproszenie-detale",
     attributes: {
-      label: "Informacje nt. zaproszenia.",
+      label: "Informacje dotyczące zaproszeń.",
       attachment: {
         type: "image" as "image",
         url: "https://www.coniecopapieru.com/wp-content/uploads/2019/10/eleganckie-zaproszenia-slubne_nietypowe_zlocone_klasyczne_transparentne_czarne__zlota-folia_co-nieco-papieru1.jpg"
@@ -487,18 +478,10 @@ function invitationDetails() {
     },
     innerBlocks: [
       {
-        name: "long-text",
-        id: "tresc-zaproszenia",
-        attributes: {
-          label: "Treść zaproszenia",
-          required: true,
-        }
-      },
-      {
         name: "multiple-choice",
         id: "wraz-z-rodzicami",
         attributes: {
-          label: `Czy zaproszenie ma zawierać zwrot "wraz z rodzicami"?`,
+          label: `Czy zaproszenie ma zawierać zwrot "wraz z Rodzicami"?`,
           required: true,
           choices: [{ value: "tak", label: "Tak" }, { value: "nie", label: "Nie" }],
           multiple: false
@@ -510,6 +493,7 @@ function invitationDetails() {
         attributes: {
           label: "Data ślubu",
           format: "DDMMYYYY",
+          separator: "-",
           required: true,
         }
       },
@@ -517,7 +501,7 @@ function invitationDetails() {
         name: "long-text",
         id: "miejsce-adres-uroczystosci",
         attributes: {
-          label: "Miejsce i adres uroczystości (np. Kościół/Urząd stanu cywilnego/plener)",
+          label: "Miejsce i adres zaślubin (np. Kościół/Urząd stanu cywilnego/plener)",
           required: true,
         }
       },
@@ -529,107 +513,147 @@ function invitationDetails() {
           required: true,
         }
       },
+      {
+        id: "data-potwierdzenia-przybycia",
+        name: "date",
+        attributes: {
+          label: "Data potwierdzenia przybycia",
+          format: "DDMMYYYY",
+          separator: "-",
+          required: true,
+        }
+      },
+    ]
+  }
+}
+
+function invitationContent() {
+  const tz = useFieldAnswer("zawiadomienia-ilosc");
+  const kd = useFieldAnswer("karty-dodatkowe-ilosc");
+  const showTZ = tz && tz !== 0;
+  const showKD = kd && kd !== 0;
+
+  return {
+    name: "group",
+    id: "zaproszenie-tresc",
+    attributes: {
+      label: "Informacje dotyczące zaproszeń.",
+      attachment: {
+        type: "image" as "image",
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2019/10/eleganckie-zaproszenia-slubne_nietypowe_zlocone_klasyczne_transparentne_czarne__zlota-folia_co-nieco-papieru1.jpg"
+      },
+      layout: "split-right" as "split-right",
+    },
+    innerBlocks: [
+      ...(showTZ ? [{
+        name: "long-text",
+        id: "tresc-zawiadomienia",
+        attributes: {
+          label: "Treść zawiadomienia o ceremoni zaślubin.",
+        }
+      }] : []),
+      {
+        name: "long-text",
+        id: "tresc-zaproszenia-rodzice",
+        attributes: {
+          label: "Treść zaproszenia dla Rodziców.",
+        }
+      },
+      {
+        name: "short-text",
+        id: "zaproszenie-dodatkowe-wersje-jezykowe",
+        attributes: { label: "Dodatkowe wersje językowe.", placeholder: "angielska/niemiecka/hiszpańska" }
+      },
+      {
+        name: "long-text",
+        id: "zaproszenie-jezyk-obcy",
+        attributes: {
+          label: "Treść zaproszenia w języku obcym.",
+        }
+      },
+      ...(showKD ? [
+        {
+          name: "long-text",
+          id: "tresc-karty-dodatkowej",
+          attributes: {
+            label: "Treść karty dodatkowej (np. informacja o noclegu lub transporcie - inna niż RSVP).",
+          }
+        }
+      ] : []),
     ]
   }
 }
 
 export default App
-//po ilościach dane takie jak:
-//Treść zaproszenia
-// Treść zaproszenia:
-// Czy zaproszenie ma zawierać zwrot "wraz z rodzicami?"
-// Data ślubu
-// Godzina
-// -Miejsce i adres uroczystości (np. Kościół/Urząd stanu cywilnego/plener)
-//
-// -Miejsce i adres przyjęcia weselnego
-//przeniesc wybor soft touch do dodatkow (?)
 
-// soft touch -> zmien z boola i dodaj do listy wykonczen folderu i wykonczen zaproszen
 
-function envelopeGroup(invitation: InvitationConfig) {
-  const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
-  const wantsEnvelopeAnswer = useFieldAnswer("wants-envelope") as [string];
-  const envelopeColorAnswer = useFieldAnswer("envelope-color") as string;
-  const envelopeTypeAnswer = useFieldAnswer("envelope-type") as string;
+function envelopeColorQuestion(invitation: InvitationConfig, grammageAnswer: string[] | undefined) {
+  const kind = grammageAnswer ?
+    grammageAnswer[0] === "miekka" ? "softEnvelopeColors" : "hardEnvelopeColors" : undefined;
 
-  const showFolderQuestions = invitationHasFolder(invitation);
+  const defaultEnvelopeColors = invitation?.softEnvelopeColors ? invitation?.softEnvelopeColors : invitation?.hardEnvelopeColors;
 
-  const colorQuestion = {
+  return [{
     name: "dropdown",
     id: "envelope-color",
     attributes: {
-      label: "Kolor koperty",
-      choices: [
-        { value: "blue", label: "Niebieski" },
-        { value: "other", label: "Inny" },
-      ],
+      label: "Kolor",
+      choices: listOfColors(kind && invitation ? invitation[kind] : defaultEnvelopeColors),
       required: true
     }
-  };
+  }];
+}
 
-  const otherColorQuestion =
-  {
-    name: "short-text",
-    id: "envelope-color-other",
-    attributes: {
-      label: "Inny - jaki?",
-      required: true
-    }
-  };
+function envelopeGroup(invitation: InvitationConfig) {
+  const hasFolder = invitationHasFolder(invitation);
+  const hasEnvelopesChoice = invitationHasEnvelopesChoice(invitation);
+  const envelopeColorAnswer = useFieldAnswer("envelope-color");
+  const grammageAnswer = useFieldAnswer("gramatura-koperty") as string[];
+  const wantsEnvelopeAnswer = useFieldAnswer("chce-koperte") as string[];
+  const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
+  const smoothGlamEnvelopeKindAnswer = useFieldAnswer("smooth-glam-koperta") as string[];
+  const isSmoothGlam = invitationNameAnswer === "smooth-glam";
+
 
   const wantsEnvelopeQuestion =
-  {
-    name: "multiple-choice",
-    id: "wants-envelope",
-    attributes: {
-      label: "Czy potrzebujesz koperty?",
-      choices: [
-        { value: "no", label: "Nie" },
-        { value: "yes", label: "Tak" },
-      ],
-      required: true
-    }
-  };
+    hasFolder ? [{
+      name: "multiple-choice",
+      id: "chce-koperte",
+      attributes: {
+        label: "Czy potrzebujesz koperty?",
+        choices: [
+          { value: "no", label: "Nie" },
+          { value: "yes", label: "Tak" },
+        ],
+        required: true
+      }
+    }] : [];
 
-  const grammageQuestion = {
+  const grammageQuestion = hasEnvelopesChoice ? [{
     name: "multiple-choice",
-    id: "folder-envelope-grammage",
+    id: "gramatura-koperty",
     attributes: {
       label: "Gramatura koperty",
       choices: [
-        { value: "soft", label: "Miękka(120g)" },
-        { value: "stiff", label: "Sztywna(250g-300g)" },
+        { value: "miekka", label: "Miękka (120g)" },
+        { value: "sztywna", label: "Sztywna (250g-300g)" },
       ],
       required: true
     }
-  };
+  }] : [];
 
-
-  const askForEnvelope = showFolderQuestions ? [
-    wantsEnvelopeQuestion,
-    ...((["just-gold", "royal", "boarding-pass"].includes(invitationNameAnswer) && wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "yes") ? [
-      grammageQuestion,
-      ...(invitationNameAnswer !== "juliette-roma" ? [colorQuestion] : []),
-      ...(envelopeColorAnswer === "other" ? [otherColorQuestion] : [])]
-      : [])
-  ] : [
-    ...(invitationNameAnswer === "smooth-glam" ? [
-      {
-        name: "multiple-choice",
-        id: "envelope-type",
-        attributes: {
-          label: "Rodzaj koperty",
-          choices: [
-            { value: "classic", label: "Klasyczna" },
-            { value: "pocket", label: "Kieszeniowa" },
-          ],
-          required: true
-        }
-      },
-    ] : []),
-    ...(envelopeTypeAnswer && envelopeTypeAnswer[0] === "classic" || invitationNameAnswer !== "smooth-glam" ? [grammageQuestion] : [])
-  ];
+  const smoothGlamEnvelopeKind = isSmoothGlam ? [{
+    name: "multiple-choice",
+    id: "smooth-glam-koperta",
+    attributes: {
+      label: "Rodzaj koperty.",
+      choices: [
+        { value: "klasyczna", label: "Klasyczna" },
+        { value: "kieszeniowa", label: "Kieszeniowa" },
+      ],
+      required: true
+    }
+  }] : [];
 
   return {
     name: "group",
@@ -643,10 +667,92 @@ function envelopeGroup(invitation: InvitationConfig) {
       layout: "split-right" as "split-right",
     },
     innerBlocks: [
-      ...(askForEnvelope),
+      ...wantsEnvelopeQuestion,
+      ...smoothGlamEnvelopeKind,
+      ...(hasFolder ? wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] == "yes" ? grammageQuestion : [] : isSmoothGlam ? smoothGlamEnvelopeKindAnswer && smoothGlamEnvelopeKindAnswer[0] === "klasyczna" ? grammageQuestion : [] : grammageQuestion),
+      ...envelopeColorQuestions(hasFolder, hasEnvelopesChoice, wantsEnvelopeAnswer, grammageAnswer, invitation, isSmoothGlam, smoothGlamEnvelopeKindAnswer),
+      ...envelopeDecorationQuestions(hasFolder, hasEnvelopesChoice, wantsEnvelopeAnswer, grammageAnswer, invitation, isSmoothGlam, smoothGlamEnvelopeKindAnswer),
+      ...(envelopeColorAnswer === "inny"
+        ? [
+          {
+            name: "short-text",
+            id: "folder-other",
+            attributes: {
+              label: "Inny - Jaki?",
+              required: true
+            }
+          }
+        ]
+        : []),
     ]
   }
 
+}
+
+function envelopeDecorationQuestion(invitation: InvitationConfig) {
+  return [{
+    name: "multiple-choice",
+    id: "envelope-finishing",
+    attributes: {
+      label: "Wykończenie koperty.",
+      choices: listToQuestions(invitation?.envelopeDecoration),
+      multiple: true,
+      required: false,
+    }
+  }];
+}
+
+function envelopeDecorationQuestions(hasFolder: boolean, hasEnvelopesChoice: boolean, wantsEnvelopeAnswer: string[], grammageAnswer: string[], invitation: InvitationConfig, isSmoothGlam: boolean, smoothGlamEnvelopeKindAnswer: string[]) {
+  if (!invitation?.envelopeDecoration) { return []; }
+  if (isSmoothGlam && smoothGlamEnvelopeKindAnswer && smoothGlamEnvelopeKindAnswer[0] === "klasyczna") {
+    return envelopeDecorationQuestion(invitation);
+  }
+  if (hasFolder) {
+    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "yes") {
+      if (hasEnvelopesChoice) {
+        if (grammageAnswer && grammageAnswer.length) {
+          return envelopeDecorationQuestion(invitation);
+        }
+      } else {
+        return envelopeDecorationQuestion(invitation);
+      }
+    }
+  } else {
+    if (hasEnvelopesChoice) {
+      if (grammageAnswer && grammageAnswer.length) {
+        return envelopeDecorationQuestion(invitation);
+      }
+    } else {
+      return envelopeDecorationQuestion(invitation);
+    }
+  }
+  return []
+}
+
+function envelopeColorQuestions(hasFolder: boolean, hasEnvelopesChoice: boolean, wantsEnvelopeAnswer: string[], grammageAnswer: string[], invitation: InvitationConfig, isSmoothGlam: boolean, smoothGlamEnvelopeKindAnswer: string[]) {
+  if (isSmoothGlam && smoothGlamEnvelopeKindAnswer && smoothGlamEnvelopeKindAnswer[0] === "kieszeniowa") {
+    return envelopeColorQuestion(invitation, ["twarda"]);
+  }
+  if (hasFolder) {
+    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "yes") {
+      if (hasEnvelopesChoice) {
+        if (grammageAnswer && grammageAnswer.length) {
+          return envelopeColorQuestion(invitation, grammageAnswer);
+        }
+      } else {
+        return envelopeColorQuestion(invitation, grammageAnswer);
+      }
+    }
+  } else {
+    if (hasEnvelopesChoice) {
+      if (grammageAnswer && grammageAnswer.length) {
+        return envelopeColorQuestion(invitation, grammageAnswer);
+      }
+    } else {
+      return envelopeColorQuestion(invitation, grammageAnswer);
+    }
+  }
+  return []
 }
 
 //wybierz -> jezeli zaproszenie smooth-glam, pytaj o rodzaj, w innym wypadku zawsze klasyczna  (wybor) klasyczna/kieszeniowa (tylko dla smooth-glam)
@@ -661,23 +767,13 @@ function envelopeGroup(invitation: InvitationConfig) {
 
 
 //RSVP:
-//Data potwierdzenia przybycia (pole data)
-// Rebus ślubny -> tak/nie
-// tak -> tekst (np. Zamiast prezentów - koperta/zamiast kwiatów - butelka wina)
-//
 
-//Treść karty dodatkowej np.INFO -> pole tekstowe niewymagane
-//
-
-//Treść zawiadomienia -> brak
 //
 //Tresc zaproszenia w jezyku obcym -> pole tekstowe niewymagane
+//
 // wszelkie informacje dotyczace zmian
 //
 //
 //Skad sie dowiedzieliscie - wielokrotny wybor
-//
-//Dane do faktury -> Czy potrzebujesz faktury? tak/nie
-//tak -> pole tekstowe
 
 //checkbox z regulaminem -> pozwol na "wyslij" tylko jak zaznaczony
