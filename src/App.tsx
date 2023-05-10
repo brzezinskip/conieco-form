@@ -14,6 +14,28 @@ import InvitationsConfig, {
   listToQuestions,
 } from "./Invitations";
 import { FormBlock } from "@quillforms/types/src/types/form-blocks";
+import { registerBlockType } from '@quillforms/blocks';
+
+registerBlockType("list", {
+  "supports": {
+    "editable": false,
+  },
+  "attributes": {
+    "items": {
+      type: "",
+    },
+  },
+
+  //@ts-ignore
+  "display": ({ attributes }) => {
+    return <ul style={{ padding: "0 0 0 15px" }}>
+      {attributes.items.map((item: string) =>
+        <li style={{ fontSize: 14 }} key={item}>{item}</li>
+      )}
+    </ul>
+  }
+})
+
 
 const translations = {
   "label.button.ok": "Ok",
@@ -90,35 +112,35 @@ function folderQuestions(invitation: InvitationConfig, folderPic: string) {
 
   return showFolderQuestions
     ? [
-        {
-          name: "group",
-          id: "folder-group",
-          attributes: {
-            label: "Folder",
-            attachment: {
-              type: "image" as "image",
-              url: folderPic,
-            },
-            layout: "split-right" as "split-right",
+      {
+        name: "group",
+        id: "folder-group",
+        attributes: {
+          label: "Folder",
+          attachment: {
+            type: "image" as "image",
+            url: folderPic,
           },
-          innerBlocks: [
-            ...folderColorQuestions(invitation),
-            ...(folderAnswer === "inny"
-              ? [
-                  {
-                    name: "short-text",
-                    id: "folder-other",
-                    attributes: {
-                      label: "Inny - Jaki?",
-                      required: true,
-                    },
-                  },
-                ]
-              : []),
-            folderFinishingQuestions(invitation),
-          ],
+          layout: "split-right" as "split-right",
         },
-      ]
+        innerBlocks: [
+          ...folderColorQuestions(invitation),
+          ...(folderAnswer === "inny"
+            ? [
+              {
+                name: "short-text",
+                id: "folder-other",
+                attributes: {
+                  label: "Inny - Jaki?",
+                  required: true,
+                },
+              },
+            ]
+            : []),
+          folderFinishingQuestions(invitation),
+        ],
+      },
+    ]
     : [];
 }
 
@@ -127,22 +149,22 @@ function decorations(invitation: InvitationConfig) {
 
   return showDecorationsQuestions
     ? [
-        {
-          name: "multiple-choice",
-          id: "invitation-decoration",
-          attributes: {
-            attachment: {
-              type: "image" as "image",
-              url: "https://www.coniecopapieru.com/wp-content/uploads/2021/02/eleganckie-zaproszenia-slubne_nietypowe_nowoczesne_ecru_zlocone_luksusowe_oryginalne_glamour_minimalistyczne_kaligrafia_co-nieco-papieru3.jpg",
-            },
-            layout: "split-right" as "split-right",
-            label: "Rodzaje wykończenia zaproszenia",
-            choices: listToQuestions(invitation.decoration || []),
-            multiple: true,
-            required: false,
+      {
+        name: "multiple-choice",
+        id: "invitation-decoration",
+        attributes: {
+          attachment: {
+            type: "image" as "image",
+            url: "https://www.coniecopapieru.com/wp-content/uploads/2021/02/eleganckie-zaproszenia-slubne_nietypowe_nowoczesne_ecru_zlocone_luksusowe_oryginalne_glamour_minimalistyczne_kaligrafia_co-nieco-papieru3.jpg",
           },
+          layout: "split-right" as "split-right",
+          label: "Rodzaje wykończenia zaproszenia",
+          choices: listToQuestions(invitation.decoration || []),
+          multiple: true,
+          required: false,
         },
-      ]
+      },
+    ]
     : [];
 }
 
@@ -180,24 +202,24 @@ function invitationsCountGroup() {
       },
       ...(showNonPersonalizedDropdown
         ? [
-            {
-              name: "dropdown",
-              id: "non-personalized-dropdown-answer",
-              attributes: {
-                label: "Miejsce na personalizację",
-                required: true,
-                choices: [
-                  {
-                    value: "bez-miejsca",
-                    label: "Bez miejsca na wypisanie personalizacji",
-                  },
-                  { value: "linia", label: "Linia" },
-                  { value: "wykropkowane", label: "Wykropkowane" },
-                  { value: "puste-miejsce", label: "Puste miejsce" },
-                ],
-              },
+          {
+            name: "dropdown",
+            id: "non-personalized-dropdown-answer",
+            attributes: {
+              label: "Miejsce na personalizację",
+              required: true,
+              choices: [
+                {
+                  value: "bez-miejsca",
+                  label: "Bez miejsca na wypisanie personalizacji",
+                },
+                { value: "linia", label: "Linia" },
+                { value: "wykropkowane", label: "Wykropkowane" },
+                { value: "puste-miejsce", label: "Puste miejsce" },
+              ],
             },
-          ]
+          },
+        ]
         : []),
       {
         name: "number",
@@ -576,28 +598,28 @@ function invitationContent() {
       },
       ...(showTZ
         ? [
-            {
-              name: "long-text",
-              id: "tresc-zawiadomienia",
-              attributes: {
-                label: "Treść zawiadomienia o ceremonii zaślubin.",
-                required: true,
-              },
+          {
+            name: "long-text",
+            id: "tresc-zawiadomienia",
+            attributes: {
+              label: "Treść zawiadomienia o ceremonii zaślubin.",
+              required: true,
             },
-          ]
+          },
+        ]
         : []),
       ...(showKD
         ? [
-            {
-              name: "long-text",
-              id: "tresc-karty-dodatkowej",
-              attributes: {
-                label:
-                  "Treść karty dodatkowej (nocleg/transport/mapa dojazdu).",
-                required: true,
-              },
+          {
+            name: "long-text",
+            id: "tresc-karty-dodatkowej",
+            attributes: {
+              label:
+                "Treść karty dodatkowej (nocleg/transport/mapa dojazdu).",
+              required: true,
             },
-          ]
+          },
+        ]
         : []),
       {
         name: "short-text",
@@ -613,6 +635,16 @@ function invitationContent() {
         attributes: {
           label: "Treść zaproszenia w języku obcym.",
         },
+      },
+      {
+        name: "list",
+        id: "lista",
+        attributes: {
+          "items": [
+            "Dodatkowe wersje tesktowe - zawiadomienia, zaproszenia dla Rodziców itp. (50 - 100 zł)",
+            "Dodatkowa wersja językowa (100 zł)", "Mapa dojazdu (wycena indywidualna / 150 - 400 zł)"
+          ]
+        }
       },
     ],
   };
@@ -663,53 +695,53 @@ function envelopeGroup(invitation: InvitationConfig) {
 
   const wantsEnvelopeQuestion = hasFolder
     ? [
-        {
-          name: "multiple-choice",
-          id: "chce-koperte",
-          attributes: {
-            label: "Czy potrzebujesz koperty?",
-            choices: [
-              { value: "no", label: "Nie" },
-              { value: "yes", label: "Tak" },
-            ],
-            required: true,
-          },
+      {
+        name: "multiple-choice",
+        id: "chce-koperte",
+        attributes: {
+          label: "Czy potrzebujesz koperty?",
+          choices: [
+            { value: "no", label: "Nie" },
+            { value: "yes", label: "Tak" },
+          ],
+          required: true,
         },
-      ]
+      },
+    ]
     : [];
 
   const grammageQuestion = hasEnvelopesChoice
     ? [
-        {
-          name: "multiple-choice",
-          id: "gramatura-koperty",
-          attributes: {
-            label: "Gramatura koperty",
-            choices: [
-              { value: "miekka", label: "Miękka (120g)" },
-              { value: "sztywna", label: "Sztywna (250g-300g)" },
-            ],
-            required: true,
-          },
+      {
+        name: "multiple-choice",
+        id: "gramatura-koperty",
+        attributes: {
+          label: "Gramatura koperty",
+          choices: [
+            { value: "miekka", label: "Miękka (120g)" },
+            { value: "sztywna", label: "Sztywna (250g-300g)" },
+          ],
+          required: true,
         },
-      ]
+      },
+    ]
     : [];
 
   const smoothGlamEnvelopeKind = isSmoothGlam
     ? [
-        {
-          name: "multiple-choice",
-          id: "smooth-glam-koperta",
-          attributes: {
-            label: "Rodzaj koperty.",
-            choices: [
-              { value: "klasyczna", label: "Klasyczna" },
-              { value: "kieszeniowa", label: "Kieszeniowa" },
-            ],
-            required: true,
-          },
+      {
+        name: "multiple-choice",
+        id: "smooth-glam-koperta",
+        attributes: {
+          label: "Rodzaj koperty.",
+          choices: [
+            { value: "klasyczna", label: "Klasyczna" },
+            { value: "kieszeniowa", label: "Kieszeniowa" },
+          ],
+          required: true,
         },
-      ]
+      },
+    ]
     : [];
 
   return {
@@ -731,11 +763,11 @@ function envelopeGroup(invitation: InvitationConfig) {
           ? grammageQuestion
           : []
         : isSmoothGlam
-        ? smoothGlamEnvelopeKindAnswer &&
-          smoothGlamEnvelopeKindAnswer[0] === "klasyczna"
-          ? grammageQuestion
-          : []
-        : grammageQuestion),
+          ? smoothGlamEnvelopeKindAnswer &&
+            smoothGlamEnvelopeKindAnswer[0] === "klasyczna"
+            ? grammageQuestion
+            : []
+          : grammageQuestion),
       ...envelopeColorQuestions(
         hasFolder,
         hasEnvelopesChoice,
@@ -747,15 +779,15 @@ function envelopeGroup(invitation: InvitationConfig) {
       ),
       ...(envelopeColorAnswer === "inny"
         ? [
-            {
-              name: "short-text",
-              id: "folder-other",
-              attributes: {
-                label: "Inny - Jaki?",
-                required: true,
-              },
+          {
+            name: "short-text",
+            id: "folder-other",
+            attributes: {
+              label: "Inny - Jaki?",
+              required: true,
             },
-          ]
+          },
+        ]
         : []),
       ...envelopeDecorationQuestions(
         hasFolder,
