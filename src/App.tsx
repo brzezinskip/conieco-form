@@ -401,30 +401,13 @@ function personalData() {
         },
       },
       {
-        name: "multiple-choice",
-        id: "needs-invoice",
+        name: "long-text",
+        id: "invoice-details",
         attributes: {
-          label: "Czy potrzebujesz faktury?",
-          choices: [
-            { value: "tak", label: "Tak" },
-            { value: "nie", label: "Nie" },
-          ],
-          multiple: false,
+          label: "Dane do faktury",
           required: true,
         },
       },
-      ...(invoice
-        ? [
-            {
-              name: "long-text",
-              id: "invoice-details",
-              attributes: {
-                label: "Dane do faktury",
-                required: true,
-              },
-            },
-          ]
-        : []),
     ],
   };
 }
