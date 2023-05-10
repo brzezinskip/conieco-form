@@ -83,7 +83,7 @@ const InvitationsConfig: IInvitationsConfig = {
       "Wkładka do koperty (4 zł)",
     ],
     softEnvelopeColors: ["Jasnoszara", "Czarna"],
-    hardEnvelopeColors: undefined,
+    hardEnvelopeColors: ["Czarna"],
     folderQuestions: null,
   },
   line: {
