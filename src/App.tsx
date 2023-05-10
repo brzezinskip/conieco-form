@@ -227,6 +227,22 @@ function invitationsCountGroup() {
   };
 }
 
+function miscGroupFirst() {
+  return {
+    name: "long-text",
+    id: "changes",
+    attributes: {
+      label:
+        "Wszelkie informacje dotyczące zmian graficznych oraz doboru dodatków nieprzypisanych do wybranej kolekcji.",
+      attachment: {
+        type: "image" as "image",
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/linee_1.jpg",
+      },
+      layout: "split-right" as "split-right",
+    },
+  };
+}
+
 function miscGroup() {
   return {
     name: "group",
@@ -240,15 +256,6 @@ function miscGroup() {
       layout: "split-right" as "split-right",
     },
     innerBlocks: [
-      {
-        name: "long-text",
-        id: "changes",
-        attributes: {
-          label:
-            "Wszelkie informacje dotyczące zmian graficznych oraz doboru dodatków nieprzypisanych do wybranej kolekcji.",
-          layout: "split-right",
-        },
-      },
       {
         name: "multiple-choice",
         id: "mode",
@@ -460,6 +467,7 @@ function App() {
             ...folderQuestions(currentInvitation, folderPic),
             ...decorations(currentInvitation),
             envelopeGroup(currentInvitation),
+            miscGroupFirst() as FormBlock,
             miscGroup() as FormBlock,
           ],
         }}
