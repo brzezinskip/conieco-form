@@ -219,8 +219,7 @@ function invitationsCountGroup() {
         name: "number",
         id: "karty-dodatkowe-ilosc",
         attributes: {
-          label:
-            "Ilość kart dodatkowych (np. informacja o noclegu lub transporcie - inna niż RSVP)",
+          label: "Ilość kart dodatkowych (nocleg/transport/mapa dojazdu)",
           required: false,
         },
       },
@@ -245,7 +244,8 @@ function miscGroup() {
         name: "long-text",
         id: "changes",
         attributes: {
-          label: "Wszelkie informacje dotyczące zmian.",
+          label:
+            "Wszelkie informacje dotyczące zmian graficznych oraz doboru dodatków nieprzypisanych do wybranej kolekcji.",
           layout: "split-right",
         },
       },
@@ -585,7 +585,7 @@ function invitationContent() {
               id: "tresc-karty-dodatkowej",
               attributes: {
                 label:
-                  "Treść karty dodatkowej (np. informacja o noclegu lub transporcie - inna niż RSVP).",
+                  "Treść karty dodatkowej (nocleg/transport/mapa dojazdu).",
                 required: true,
               },
             },
@@ -855,25 +855,3 @@ function envelopeColorQuestions(
   }
   return [];
 }
-
-//wybierz -> jezeli zaproszenie smooth-glam, pytaj o rodzaj, w innym wypadku zawsze klasyczna  (wybor) klasyczna/kieszeniowa (tylko dla smooth-glam)
-//120g miekka -> wszystkie zaproszenia, 250g- 300g sztywna - tylko niektore z zaproszen [potrzebna lista]
-//
-// kolor -> kazde zaproszenie musi miec zdefiniowana pule kolorow, lub kolor "inny", wtedy wyswietl pole tekstowe
-// zdobienie koperty -> brak, lub lista wielokrotnego wyboru w zaleznosci od wybranego zaproszenia
-//folder -> kazde zaproszenie w folderze ma zdefiniowana liste dostepnych kolorow, lub "inny"
-//folder -> kazde zaproszenie ma zdefiniowana liste mozliwych wykonczen folderu -> lub wielokrotny wybor
-//wykonczenie zaproszenia (przed pytaniem o folder) -> kazde zaproszenie ma zdefiniowana liste wykonczen [moze byc pusta, wtedy nie wyswietlamy]
-//jezeli lista nie jest pusta, wyswietl brak, lub lista wielokrotnego wyboru
-
-//RSVP:
-
-//
-//Tresc zaproszenia w jezyku obcym -> pole tekstowe niewymagane
-//
-// wszelkie informacje dotyczace zmian
-//
-//
-//Skad sie dowiedzieliscie - wielokrotny wybor
-
-//checkbox z regulaminem -> pozwol na "wyslij" tylko jak zaznaczony
