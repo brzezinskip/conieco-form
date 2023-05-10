@@ -405,7 +405,7 @@ function personalData() {
         id: "invoice-details",
         attributes: {
           label: "Dane do faktury",
-          required: true,
+          required: false,
         },
       },
     ],
