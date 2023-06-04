@@ -27,7 +27,10 @@ registerBlockType("list", {
   },
 
   //@ts-ignore
-  "display": ({ attributes }) => {
+  "display": ({ attributes, setIsAnswered, setIsValid, showNextBtn }) => {
+    setIsAnswered(true);
+    setIsValid(true);
+    showNextBtn(true);
     return <ul style={{ padding: "0 0 0 15px" }}>
       {attributes.items.map((item: string) =>
         <li style={{ fontSize: 14 }} key={item}>{item}</li>
@@ -82,7 +85,7 @@ const folderPics: { [key: string]: string } = {
 function folderFinishingQuestions(invitation: InvitationConfig) {
   return {
     name: "multiple-choice",
-    id: "folder-finishing",
+    id: "wykonczenie-folderu",
     attributes: {
       label: "Rodzaje wykończenia folderu",
       choices: listToQuestions(invitation.folderQuestions?.decorations),
@@ -96,7 +99,7 @@ function folderColorQuestions(invitation: InvitationConfig) {
   return [
     {
       name: "dropdown",
-      id: "folder",
+      id: "folder-kolor",
       attributes: {
         label: "Kolor",
         choices: listOfColors(invitation.folderQuestions?.colors),
@@ -108,13 +111,13 @@ function folderColorQuestions(invitation: InvitationConfig) {
 
 function folderQuestions(invitation: InvitationConfig, folderPic: string) {
   const showFolderQuestions = invitationHasFolder(invitation);
-  const folderAnswer: string = useFieldAnswer("folder") as string;
+  const folderAnswer: string = useFieldAnswer("folder-kolor") as string;
 
   return showFolderQuestions
     ? [
       {
         name: "group",
-        id: "folder-group",
+        id: "folder-grupa",
         attributes: {
           label: "Folder",
           attachment: {
@@ -129,7 +132,7 @@ function folderQuestions(invitation: InvitationConfig, folderPic: string) {
             ? [
               {
                 name: "short-text",
-                id: "folder-other",
+                id: "folder-kolor-inny",
                 attributes: {
                   label: "Inny - Jaki?",
                   required: true,
@@ -151,7 +154,7 @@ function decorations(invitation: InvitationConfig) {
     ? [
       {
         name: "multiple-choice",
-        id: "invitation-decoration",
+        id: "zaproszenie-dodatki",
         attributes: {
           attachment: {
             type: "image" as "image",
@@ -169,12 +172,12 @@ function decorations(invitation: InvitationConfig) {
 }
 
 function invitationsCountGroup() {
-  const nonPersonalizedAnswer = useFieldAnswer("non-personalized-count");
+  const nonPersonalizedAnswer = useFieldAnswer("bez-personalizacji-ilosc");
   const showNonPersonalizedDropdown =
     nonPersonalizedAnswer && nonPersonalizedAnswer > 0;
   return {
     name: "group",
-    id: "invitations-count-group",
+    id: "zaproszenia-liczby-grupa",
     attributes: {
       label: "Ilości zaproszeń.",
       attachment: {
@@ -186,7 +189,7 @@ function invitationsCountGroup() {
     innerBlocks: [
       {
         name: "number",
-        id: "personalized-count",
+        id: "personalizowane-ilosc",
         attributes: {
           label: "Ilość zaproszeń personalizowanych",
           required: true,
@@ -194,7 +197,7 @@ function invitationsCountGroup() {
       },
       {
         name: "number",
-        id: "non-personalized-count",
+        id: "bez-personalizacji-ilosc",
         attributes: {
           label: "Ilość zaproszeń bez personalizacji",
           required: true,
@@ -204,7 +207,7 @@ function invitationsCountGroup() {
         ? [
           {
             name: "dropdown",
-            id: "non-personalized-dropdown-answer",
+            id: "bez-personalizacji-co-w-zamian",
             attributes: {
               label: "Miejsce na personalizację",
               required: true,
@@ -231,7 +234,7 @@ function invitationsCountGroup() {
       },
       {
         name: "number",
-        id: "rsvp-count",
+        id: "rsvp-ilosc",
         attributes: {
           label: "Ilość RSVP",
           required: true,
@@ -252,7 +255,7 @@ function invitationsCountGroup() {
 function miscGroupFirst() {
   return {
     name: "long-text",
-    id: "changes",
+    id: "wszelkie-zmiany",
     attributes: {
       label:
         "Wszelkie informacje dotyczące zmian graficznych oraz doboru dodatków nieprzypisanych do wybranej kolekcji.",
@@ -268,7 +271,7 @@ function miscGroupFirst() {
 function miscGroup() {
   return {
     name: "group",
-    id: "misc",
+    id: "pytania-dodatkowe-grupa",
     attributes: {
       label: "Pytania dodatkowe.",
       attachment: {
@@ -280,7 +283,7 @@ function miscGroup() {
     innerBlocks: [
       {
         name: "multiple-choice",
-        id: "mode",
+        id: "tryb-skladu",
         attributes: {
           label: "Tryb.",
           choices: [
@@ -293,12 +296,12 @@ function miscGroup() {
       },
       {
         name: "multiple-choice",
-        id: "put-together-service",
+        id: "usluga-skladu",
         attributes: {
           label: "Usługa składu.",
           choices: [
-            { value: "yes", label: "Tak" },
-            { value: "no", label: "Nie" },
+            { value: "tak", label: "Tak" },
+            { value: "nie", label: "Nie" },
           ],
           multiple: false,
           required: true,
@@ -333,7 +336,7 @@ function miscGroup() {
 function invitationGroup() {
   return {
     name: "group",
-    id: "invitation-group",
+    id: "zaproszenie-grupa",
     attributes: {
       label: "Zaproszenie.",
       attachment: {
@@ -344,7 +347,7 @@ function invitationGroup() {
     },
     innerBlocks: [
       {
-        id: "invitation-name",
+        id: "zaproszenie-nazwa",
         name: "dropdown",
         attributes: {
           label: "Nazwa zaproszenia",
@@ -357,23 +360,21 @@ function invitationGroup() {
 }
 
 function personalData() {
-  const invoiceAnswer = useFieldAnswer("needs-invoice") as string[];
-  const invoice = invoiceAnswer && invoiceAnswer[0] === "tak";
   return {
     name: "group",
-    id: "personal-data",
+    id: "dane-osobowe-grupa",
     attributes: {
       label: "Dane osobowe.",
       attachment: {
         type: "image" as "image",
-        url: "https://www.coniecopapieru.com/wp-content/uploads/2022/12/zaproszenia-slubne_eleganckie_minimalistyczne_nowoczesne_proste_klasyczne_na-slub_coniecopapieru_baner-1536x727.jpg",
+        url: "https://www.coniecopapieru.com/wp-content/uploads/2023/05/rsz_2formularz_minimal2.jpg",
       },
       layout: "split-left" as "split-left",
     },
     innerBlocks: [
       {
         name: "short-text",
-        id: "bride-name",
+        id: "panna-mloda",
         attributes: {
           required: true,
           label: "Imię i nazwisko panny młodej",
@@ -382,7 +383,7 @@ function personalData() {
       },
       {
         name: "short-text",
-        id: "groom-name",
+        id: "pan-mlody",
         attributes: {
           required: true,
           label: "Imię i nazwisko pana młodego",
@@ -399,7 +400,7 @@ function personalData() {
         },
       },
       {
-        id: "addres",
+        id: "adres-do-wysylki",
         name: "long-text",
         attributes: {
           label: "Adres do wysyłki",
@@ -408,7 +409,7 @@ function personalData() {
         },
       },
       {
-        id: "phone-number-bride",
+        id: "numer-telefonu-panna-mloda",
         name: "short-text",
         attributes: {
           setMaxCharacters: true,
@@ -419,7 +420,7 @@ function personalData() {
         },
       },
       {
-        id: "phone-number-groom",
+        id: "numer-telefonu-pan-mlody",
         name: "short-text",
         attributes: {
           setMaxCharacters: true,
@@ -431,7 +432,7 @@ function personalData() {
       },
       {
         name: "long-text",
-        id: "invoice-details",
+        id: "dane-do-faktury",
         attributes: {
           label: "Dane do faktury",
           required: false,
@@ -441,7 +442,7 @@ function personalData() {
   };
 }
 function App() {
-  const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
+  const invitationNameAnswer = useFieldAnswer("zaproszenie-nazwa") as string;
   const folderPic = invitationNameAnswer
     ? folderPics[invitationNameAnswer]
     : "";
@@ -449,7 +450,7 @@ function App() {
   const currentInvitation: InvitationConfig =
     InvitationsConfig[invitationNameAnswer];
 
-  //clear all groups after personalData when user changes invitation answer
+  //clear all groups after personalData when user  invitation answer
 
   return (
     <div className={"myForm"}>
@@ -461,9 +462,6 @@ function App() {
           theme: {
             font: "Roboto",
             buttonsBgColor: "#fdf2ed",
-            logo: {
-              src: "https://www.coniecopapieru.com/wp-content/uploads/2019/10/cropped-logo_coniecopapieru-1.png",
-            },
             questionsColor: "#000",
             answersColor: "#a39364",
             buttonsFontColor: "#a39364",
@@ -493,15 +491,41 @@ function App() {
             miscGroup() as FormBlock,
           ],
         }}
-        onSubmit={(data, { completeForm, setIsSubmitting }) => {
-          setTimeout(() => {
-            setIsSubmitting(false);
-            completeForm();
-          }, 500);
+        onSubmit={async (data: any, { completeForm, setIsSubmitting }) => {
+          const transformedData = Object.entries(data.answers).map(([key, v]: [key: string, v: any]) => {
+            const newKey = key.split('-');
+            const transformedKey = newKey.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            return [transformedKey, v.value ? v.value : "---------------"];
+          });
+          const backToObject = Object.fromEntries(transformedData);
+          setIsSubmitting(true);
+          await handleSubmit(backToObject);
+          completeForm();
+
         }}
       />
     </div>
   );
+}
+
+async function handleSubmit(formData: any) {
+  fetch('https://www.coniecopapieru.com/wp-json/form/v1/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log('Form submission recorded');
+      } else {
+        console.error('Failed to record form submission');
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred during form submission:', error);
+    });
 }
 
 function invitationDetails() {
@@ -636,16 +660,6 @@ function invitationContent() {
           label: "Treść zaproszenia w języku obcym.",
         },
       },
-      {
-        name: "list",
-        id: "lista",
-        attributes: {
-          "items": [
-            "Dodatkowe wersje tesktowe - zawiadomienia, zaproszenia dla Rodziców itp. (50 - 100 zł)",
-            "Dodatkowa wersja językowa (100 zł)", "Mapa dojazdu (wycena indywidualna / 150 - 400 zł)"
-          ]
-        }
-      },
     ],
   };
 }
@@ -669,7 +683,7 @@ function envelopeColorQuestion(
   return [
     {
       name: "dropdown",
-      id: "envelope-color",
+      id: "kolor-koperty",
       attributes: {
         label: "Kolor",
         choices: listOfColors(
@@ -684,12 +698,12 @@ function envelopeColorQuestion(
 function envelopeGroup(invitation: InvitationConfig) {
   const hasFolder = invitationHasFolder(invitation);
   const hasEnvelopesChoice = invitationHasEnvelopesChoice(invitation);
-  const envelopeColorAnswer = useFieldAnswer("envelope-color");
+  const envelopeColorAnswer = useFieldAnswer("kolor-koperty");
   const grammageAnswer = useFieldAnswer("gramatura-koperty") as string[];
   const wantsEnvelopeAnswer = useFieldAnswer("chce-koperte") as string[];
-  const invitationNameAnswer = useFieldAnswer("invitation-name") as string;
+  const invitationNameAnswer = useFieldAnswer("zaproszenie-nazwa") as string;
   const smoothGlamEnvelopeKindAnswer = useFieldAnswer(
-    "smooth-glam-koperta"
+    "smooth-glam-koperta-rodzaj"
   ) as string[];
   const isSmoothGlam = invitationNameAnswer === "smooth-glam";
 
@@ -701,8 +715,8 @@ function envelopeGroup(invitation: InvitationConfig) {
         attributes: {
           label: "Czy potrzebujesz koperty?",
           choices: [
-            { value: "no", label: "Nie" },
-            { value: "yes", label: "Tak" },
+            { value: "nie", label: "Nie" },
+            { value: "tak", label: "Tak" },
           ],
           required: true,
         },
@@ -731,7 +745,7 @@ function envelopeGroup(invitation: InvitationConfig) {
     ? [
       {
         name: "multiple-choice",
-        id: "smooth-glam-koperta",
+        id: "smooth-glam-koperta-rodzaj",
         attributes: {
           label: "Rodzaj koperty.",
           choices: [
@@ -746,7 +760,7 @@ function envelopeGroup(invitation: InvitationConfig) {
 
   return {
     name: "group",
-    id: "envelope-group",
+    id: "koperta-grupa",
     attributes: {
       label: "Koperta.",
       attachment: {
@@ -759,7 +773,7 @@ function envelopeGroup(invitation: InvitationConfig) {
       ...wantsEnvelopeQuestion,
       ...smoothGlamEnvelopeKind,
       ...(hasFolder
-        ? wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] == "yes"
+        ? wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] == "tak"
           ? grammageQuestion
           : []
         : isSmoothGlam
@@ -781,7 +795,7 @@ function envelopeGroup(invitation: InvitationConfig) {
         ? [
           {
             name: "short-text",
-            id: "folder-other",
+            id: "koperta-kolor-inny",
             attributes: {
               label: "Inny - Jaki?",
               required: true,
@@ -806,7 +820,7 @@ function envelopeDecorationQuestion(invitation: InvitationConfig) {
   return [
     {
       name: "multiple-choice",
-      id: "envelope-finishing",
+      id: "wykonczenie-koperty",
       attributes: {
         label: "Wykończenie koperty.",
         choices: listToQuestions(invitation?.envelopeDecoration),
@@ -837,7 +851,7 @@ function envelopeDecorationQuestions(
     return envelopeDecorationQuestion(invitation);
   }
   if (hasFolder) {
-    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "yes") {
+    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "tak") {
       if (hasEnvelopesChoice) {
         if (grammageAnswer && grammageAnswer.length) {
           return envelopeDecorationQuestion(invitation);
@@ -875,7 +889,7 @@ function envelopeColorQuestions(
     return envelopeColorQuestion(invitation, ["twarda"]);
   }
   if (hasFolder) {
-    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "yes") {
+    if (wantsEnvelopeAnswer && wantsEnvelopeAnswer[0] === "tak") {
       if (hasEnvelopesChoice) {
         if (grammageAnswer && grammageAnswer.length) {
           return envelopeColorQuestion(invitation, grammageAnswer);
