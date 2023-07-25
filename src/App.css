@@ -22,3 +22,13 @@ body {
   width: 320px;
   left: unset !important;
 }
+
+@media (min-width: 600px) {
+    .renderer-core-block-split-left-layout .renderer-core-block-attachment-wrapper:first-child,
+    .renderer-core-block-float-left-layout .renderer-core-block-attachment-wrapper:first-child,
+.renderer-core-block-split-right-layout .renderer-core-block-attachment-wrapper:first-child,
+    .renderer-core-block-float-right-layout .renderer-core-block-attachment-wrapper:first-child {
+        transform: none !important
+        animation-play-state: paused;
+    }
+}

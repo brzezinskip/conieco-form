@@ -14,31 +14,34 @@ import InvitationsConfig, {
   listToQuestions,
 } from "./Invitations";
 import { FormBlock } from "@quillforms/types/src/types/form-blocks";
-import { registerBlockType } from '@quillforms/blocks';
+import { registerBlockType } from "@quillforms/blocks";
 
 registerBlockType("list", {
-  "supports": {
-    "editable": false,
+  supports: {
+    editable: false,
   },
-  "attributes": {
-    "items": {
+  attributes: {
+    items: {
       type: "",
     },
   },
 
   //@ts-ignore
-  "display": ({ attributes, setIsAnswered, setIsValid, showNextBtn }) => {
+  display: ({ attributes, setIsAnswered, setIsValid, showNextBtn }) => {
     setIsAnswered(true);
     setIsValid(true);
     showNextBtn(true);
-    return <ul style={{ padding: "0 0 0 15px" }}>
-      {attributes.items.map((item: string) =>
-        <li style={{ fontSize: 14 }} key={item}>{item}</li>
-      )}
-    </ul>
-  }
-})
-
+    return (
+      <ul style={{ padding: "0 0 0 15px" }}>
+        {attributes.items.map((item: string) => (
+          <li style={{ fontSize: 14 }} key={item}>
+            {item}
+          </li>
+        ))}
+      </ul>
+    );
+  },
+});
 
 const translations = {
   "label.button.ok": "Ok",
@@ -172,7 +175,9 @@ function decorations(invitation: InvitationConfig) {
 }
 
 function invitationsCountGroup() {
-  const nonPersonalizedAnswer = useFieldAnswer("bez-personalizacji-ilosc");
+  const nonPersonalizedAnswer = useFieldAnswer(
+    "bez-personalizacji-ilosc"
+  ) as number;
   const showNonPersonalizedDropdown =
     nonPersonalizedAnswer && nonPersonalizedAnswer > 0;
   return {
@@ -333,124 +338,129 @@ function miscGroup() {
   };
 }
 
+const invitationNames = getInvitationNames();
+
 function invitationGroup() {
-  return {
-    name: "group",
-    id: "zaproszenie-grupa",
-    attributes: {
-      label: "Zaproszenie.",
-      attachment: {
-        type: "image" as "image",
-        url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/linee_1.jpg",
-      },
-      layout: "split-right" as "split-right",
-    },
-    innerBlocks: [
-      {
-        id: "zaproszenie-nazwa",
-        name: "dropdown",
-        attributes: {
-          label: "Nazwa zaproszenia",
-          required: true,
-          choices: getInvitationNames(),
+  return [
+    {
+      name: "group",
+      id: "zaproszenie-grupa",
+      attributes: {
+        label: "Zaproszenie.",
+        attachment: {
+          type: "image" as "image",
+          url: "https://www.coniecopapieru.com/wp-content/uploads/2022/04/linee_1.jpg",
         },
+        layout: "split-right" as "split-right",
       },
-    ],
-  };
+      innerBlocks: [
+        {
+          id: "zaproszenie-nazwa",
+          name: "dropdown",
+          attributes: {
+            label: "Nazwa zaproszenia",
+            required: true,
+            choices: invitationNames,
+          },
+        },
+      ],
+    },
+  ];
 }
 
 function personalData() {
-  return {
-    name: "group",
-    id: "dane-osobowe-grupa",
-    attributes: {
-      label: "Dane osobowe.",
-      attachment: {
-        type: "image" as "image",
-        url: "https://www.coniecopapieru.com/wp-content/uploads/2023/05/rsz_2formularz_minimal2.jpg",
+  return [
+    {
+      name: "group",
+      id: "dane-osobowe-grupa",
+      attributes: {
+        label: "Dane osobowe.",
+        attachment: {
+          type: "image" as "image",
+          url: "https://www.coniecopapieru.com/wp-content/uploads/2023/05/rsz_2formularz_minimal2.jpg",
+        },
+        layout: "split-left" as "split-left",
       },
-      layout: "split-left" as "split-left",
+      innerBlocks: [
+        {
+          name: "short-text",
+          id: "panna-mloda",
+          attributes: {
+            required: true,
+            label: "Imię i nazwisko panny młodej",
+            placeholder: "Joanna Kowalska",
+          },
+        },
+        {
+          name: "short-text",
+          id: "pan-mlody",
+          attributes: {
+            required: true,
+            label: "Imię i nazwisko pana młodego",
+            placeholder: "Jan Nowak",
+          },
+        },
+        {
+          name: "email",
+          id: "email",
+          attributes: {
+            label: "Adres e-mail",
+            placeholder: "john-doe@gmail.com",
+            required: true,
+          },
+        },
+        {
+          id: "adres-do-wysylki",
+          name: "long-text",
+          attributes: {
+            label: "Adres do wysyłki",
+            required: true,
+            placeholder: "Ul. Główna 28\n00-001 Warszawa",
+          },
+        },
+        {
+          id: "numer-telefonu-panna-mloda",
+          name: "short-text",
+          attributes: {
+            setMaxCharacters: true,
+            maxCharacters: "20",
+            required: true,
+            label: "Numer telefonu Panny Młodej",
+            placeholder: "48 123 456 789",
+          },
+        },
+        {
+          id: "numer-telefonu-pan-mlody",
+          name: "short-text",
+          attributes: {
+            setMaxCharacters: true,
+            maxCharacters: "20",
+            required: true,
+            label: "Numer telefonu Pana Młodego",
+            placeholder: "48 123 456 789",
+          },
+        },
+        {
+          name: "long-text",
+          id: "dane-do-faktury",
+          attributes: {
+            label: "Dane do faktury",
+            required: false,
+          },
+        },
+      ],
     },
-    innerBlocks: [
-      {
-        name: "short-text",
-        id: "panna-mloda",
-        attributes: {
-          required: true,
-          label: "Imię i nazwisko panny młodej",
-          placeholder: "Joanna Kowalska",
-        },
-      },
-      {
-        name: "short-text",
-        id: "pan-mlody",
-        attributes: {
-          required: true,
-          label: "Imię i nazwisko pana młodego",
-          placeholder: "Jan Nowak",
-        },
-      },
-      {
-        name: "email",
-        id: "email",
-        attributes: {
-          label: "Adres e-mail",
-          placeholder: "john-doe@gmail.com",
-          required: true,
-        },
-      },
-      {
-        id: "adres-do-wysylki",
-        name: "long-text",
-        attributes: {
-          label: "Adres do wysyłki",
-          required: true,
-          placeholder: "Ul. Główna 28\n00-001 Warszawa",
-        },
-      },
-      {
-        id: "numer-telefonu-panna-mloda",
-        name: "short-text",
-        attributes: {
-          setMaxCharacters: true,
-          maxCharacters: "20",
-          required: true,
-          label: "Numer telefonu Panny Młodej",
-          placeholder: "48 123 456 789",
-        },
-      },
-      {
-        id: "numer-telefonu-pan-mlody",
-        name: "short-text",
-        attributes: {
-          setMaxCharacters: true,
-          maxCharacters: "20",
-          required: true,
-          label: "Numer telefonu Pana Młodego",
-          placeholder: "48 123 456 789",
-        },
-      },
-      {
-        name: "long-text",
-        id: "dane-do-faktury",
-        attributes: {
-          label: "Dane do faktury",
-          required: false,
-        },
-      },
-    ],
-  };
+  ];
 }
 function App() {
   const invitationNameAnswer = useFieldAnswer("zaproszenie-nazwa") as string;
+
   const folderPic = invitationNameAnswer
     ? folderPics[invitationNameAnswer]
     : "";
 
   const currentInvitation: InvitationConfig =
     InvitationsConfig[invitationNameAnswer];
-
-  //clear all groups after personalData when user  invitation answer
 
   return (
     <div className={"myForm"}>
@@ -479,8 +489,8 @@ function App() {
             animationDirection: "horizontal",
           },
           blocks: [
-            personalData(),
-            invitationGroup(),
+            ...personalData(),
+            ...invitationGroup(),
             invitationsCountGroup(),
             invitationDetails(),
             invitationContent(),
@@ -492,16 +502,19 @@ function App() {
           ],
         }}
         onSubmit={async (data: any, { completeForm, setIsSubmitting }) => {
-          const transformedData = Object.entries(data.answers).map(([key, v]: [key: string, v: any]) => {
-            const newKey = key.split('-');
-            const transformedKey = newKey.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            return [transformedKey, v.value ? v.value : "---------------"];
-          });
+          const transformedData = Object.entries(data.answers).map(
+            ([key, v]: [key: string, v: any]) => {
+              const newKey = key.split("-");
+              const transformedKey = newKey
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ");
+              return [transformedKey, v.value ? v.value : "---------------"];
+            }
+          );
           const backToObject = Object.fromEntries(transformedData);
           setIsSubmitting(true);
           await handleSubmit(backToObject);
           completeForm();
-
         }}
       />
     </div>
@@ -509,22 +522,22 @@ function App() {
 }
 
 async function handleSubmit(formData: any) {
-  fetch('https://www.coniecopapieru.com/wp-json/form/v1/submit', {
-    method: 'POST',
+  fetch("https://www.coniecopapieru.com/wp-json/form/v1/submit", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(formData),
   })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
-        console.log('Form submission recorded');
+        console.log("Form submission recorded");
       } else {
-        console.error('Failed to record form submission');
+        console.error("Failed to record form submission");
       }
     })
-    .catch(error => {
-      console.error('Error occurred during form submission:', error);
+    .catch((error) => {
+      console.error("Error occurred during form submission:", error);
     });
 }
 

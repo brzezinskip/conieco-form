@@ -263,11 +263,11 @@ const InvitationsConfig: IInvitationsConfig = {
     folderQuestions: null,
   },
   "just-gold": {
-    decoration: null,
+    decoration: ["Soft touch"],
     envelopeDecoration: [
       "Zamknięcie koperty złotym sznureczkiem ?????",
       "Zamknięcie koperty na magnes (2 zł)",
-      "Zamknięcie koperty na magnes z chwostem (5,5 zł)",
+      "Zamknięcie koperty na magnes z chwostem (6 zł)",
       "Wkładka do koperty złocona (6 zł)",
       "Odbicie lakowe (4 zł)",
     ],
@@ -279,7 +279,7 @@ const InvitationsConfig: IInvitationsConfig = {
         "Zamknięcie folderu na magnes (2 zł)",
         "Zamknięcie folderu na magnes z chwostem (5,5 zł)",
         "Odbicie lakowe (4 zł)",
-        "Soft touch",
+        //"Soft touch",
       ],
     },
   },
@@ -298,7 +298,7 @@ const InvitationsConfig: IInvitationsConfig = {
   "pure-love": {
     decoration: null,
     envelopeDecoration: [
-      "Naklejhka na kopertę z imionami pary młodej (2 zł)",
+      "Naklejka na kopertę z imionami pary młodej (2 zł)",
       "Wkładka do koperty (4 zł)",
     ],
     softEnvelopeColors: ["Beżowa", "Transparentna"],
